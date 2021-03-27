@@ -1,15 +1,25 @@
 import time
 import re
-from datetime import date
-from firebase import firebase
 import names
+from datetime import date
+from firebase import Firebase
 from random import randint
 
 # firebase project identifier: fir-test-env-mandp
 # firebase table identifier: fir-test-env-mandp-default-rtdb
+# firebase link: https://fir-test-env-mandp-default-rtdb.firebaseio.com/
 
-# firebase connection establish
-firebase = firebase.FirebaseApplication("https://fir-test-env-mandp-default-rtdb.firebaseio.com/", None)
+config = {
+  "apiKey": "AAAA3KmrBPQ:APA91bFqfELPwbuc7gAS1FkgCland5wKUAEZpEaYUmLdjdjr-rUVF1zBp_5JKHY_TxbsT6ROtiRy28gCd2pEPmHkawl2b-ow1H2rkOCknJ6b3npX09_flYlFZnQI1O5R0F-EC_PoJw1D",
+  "authDomain": "fir-test-env-mandp.firebaseapp.com",
+  "databaseURL": "https://fir-test-env-mandp-default-rtdb.firebaseio.com",
+  "storageBucket": "fir-test-env-mandp.appspot.com"
+  # optional - overrides security rules
+  # "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
+}
+
+# firebase_dblink connection establish
+firebase = Firebase(config)
 
 # in classes:
 # thing     - is public
@@ -19,6 +29,7 @@ firebase = firebase.FirebaseApplication("https://fir-test-env-mandp-default-rtdb
 
 class User:
     def __init__(self, name, surname, birth_date):  # birth_date in format datetime.date(yyyy, mm, dd)
+        self.user_id = None
         self.name = str(name).capitalize()
         self.surname = str(surname).capitalize()
         self.birth_date = birth_date
@@ -63,7 +74,7 @@ def update_user(given_user, given_localization, given_email):
 
 user1 = User(names.get_first_name(), names.get_last_name(), date(2000 - randint(0, 10), randint(1, 12), randint(1, 28)))
 update_user(user1, (0, 0), f"{user1.name.lower()}.{user1.surname.lower()}@google.com")
-user1.print_user()
+# user1.print_user()
 
 data1 = {
     'Name': user1.name + ' ' + user1.surname,
@@ -87,17 +98,25 @@ data1 = {
 #     'Current used tags': user2.tags
 # }
 
-# pushing data and data2 to firebase
+# pushing data and data2 to firebase_dblink
 # TODO read about .put() and .patch() how to update already existing data entries?
-# user_data_id = firebase.post('/fir-test-env-mandp-default-rtdb/Users', data1)
+# user_data_id = firebase_dblink.post('/fir-test-env-mandp-default-rtdb/Users', data1)
 # print(user_data_id)
 # print("-MWiyGcWO5t39J3zn34q")
 
-# pulling data from firebase
+# pulling data from firebase_dblink
 
-pull_result = firebase.get('/fir-test-env-mandp-default-rtdb/Users', '')
-print(pull_result)
-for key, value in pull_result.items():
-    print(f"User ID token: {key}")
-    for sub_key, sub_value in value.items():
-        print(f"\t{sub_key:{' '}{'<'}{20}}: {sub_value}")
+# pull_result = firebase_dblink.get('/fir-test-env-mandp-default-rtdb/Users/', )
+
+db = firebase.database()
+all_user_ids = db.child("/fir-test-env-mandp-default-rtdb/Users").shallow().get()
+user_ids = []
+
+for user_id in all_user_ids.val():
+    user_ids.append(user_id)
+
+# for key, value in pull_result.items():
+#     print(f"User ID token: {key}")
+#     for sub_key, sub_value in value.items():
+#         print(f"\t{sub_key:{' '}{'<'}{20}}: {sub_value}")
+
