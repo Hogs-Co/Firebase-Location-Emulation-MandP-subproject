@@ -11,11 +11,12 @@ class User:
         self.name = str(name).capitalize()
         self.surname = str(surname).capitalize()
         self.birth_date = birth_date
+        self.age = None
         self.email = None
         self.email_correct = False
         self.localization = (None, None)
         self.tags = []
-        self.age = None
+        self.user_generated_tags = []
 
     def set_localization(self, localization):
         self.localization = localization
@@ -52,14 +53,14 @@ class User:
             'Birth date': str(self.birth_date),
             'Age': self.age,
             'Current localization': self.localization,
-            'Current used tags': self.tags
+            'Current used tags': self.tags,
+            'User generated tags': self.user_generated_tags
         }
         return data
 
     def print_user(self):
-        print(f"Name & surname: {self.name} {self.surname}")
-        print(f"Age: {self.age}")
-        print(f"E-mail: {self.email}")
+        for key, value in self.create_firebase_entry().keys():
+            print(f"{str(key):{' '}{'<'}{25}}: {value}")
 
 
 def create_users(num_of_users):
@@ -72,7 +73,3 @@ def create_users(num_of_users):
         list_of_users.append(user)
     return list_of_users
 
-
-for user in create_users(100):
-    user.print_user()
-    print()

@@ -10,3 +10,9 @@ print(uuid.uuid4())
 # print(len(dict_of_ids.keys()))
 
 
+def test_kwargs(numer, *args, **kwargs):
+    for key, value in kwargs.items():
+        print("{}: {}".format(key, value))
+
+
+test_kwargs(3, name="dupa", surname="romana")
