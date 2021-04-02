@@ -25,24 +25,25 @@ WindowManager:
         cols: 1
 
         Label:
-            text: "Emulation project (Alpha)"
+            text: "Emulation app (Alpha v 0.0.2)"
             bold: True
             italic: True
-            text_size: cm(5), cm(.5)
+            text_size: cm(1), cm(.1)
             color: 1,1,1,1
+
 
         GridLayout:
             cols: 2
 
             Button:
                 id: browseBtn
-                text: "Browse"
+                text: "Browse users"
                 on_release:
                     app.root.current = "browseWin"
 
             Button:
                 id: manageBtn
-                text: "Manage"
+                text: "Manage users"
                 on_release:
                     app.root.current = "manageWin"
         Button:
@@ -81,3 +82,80 @@ WindowManager:
     name: "generateWin"
 
     GoBackBtn:
+
+    Label:
+        text: 'Generate users'
+        size_hint: .9, .2
+        pos_hint: {"x": .05, "y": .7}
+    GridLayout:
+        cols: 2
+        size_hint: .9, .2
+        pos_hint: {"x": .05, "y": .4}
+
+        Button:
+            id: appendUsers
+            text: "Append users list"
+            halign: 'center'
+            valign: 'middle'
+            on_release:
+                root.btnAppend()
+
+        Button:
+            id: deleteAndCreateNewUsers
+            text: "Clear users list\nand generate new users"
+            halign: 'center'
+            valign: 'middle'
+            on_release:
+                root.btnClearAndGenerate()
+
+<PopCreateAppend>:
+    Label:
+        text: "amount: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .6}
+
+    TextInput:
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .6}
+
+    Button:
+        text: "Submit"
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .2}
+
+
+<PopClearAndGenerate>
+    Label:
+        text: "amount: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .7}
+
+    TextInput:
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .7}
+
+    Label:
+        text: "password: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .5}
+
+    TextInput:
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .5}
+
+    Button:
+        text: "Submit"
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .2}
