@@ -1,5 +1,6 @@
 #:import NoTransition kivy.uix.screenmanager.NoTransition
 #:import ScreenManager kivy.uix.screenmanager
+#:import dba database_access
 
 WindowManager:
     transition: NoTransition()
@@ -28,7 +29,6 @@ WindowManager:
             text: "Emulation app (Alpha v 0.0.2)"
             bold: True
             italic: True
-            text_size: cm(1), cm(.1)
             color: 1,1,1,1
 
 
@@ -137,10 +137,12 @@ WindowManager:
         pos_hint: {"center_x": .3, "center_y": .7}
 
     TextInput:
+        id: amount_of_users
         size_hint: None, None
         height: 30
         width: 100
         pos_hint: {"center_x": .6, "center_y": .7}
+        multiline: False
 
     Label:
         text: "password: "
@@ -150,12 +152,35 @@ WindowManager:
         pos_hint: {"center_x": .3, "center_y": .5}
 
     TextInput:
+        id: password
+        password: True
         size_hint: None, None
         height: 30
         width: 100
         pos_hint: {"center_x": .6, "center_y": .5}
+        multiline: False
 
     Button:
         text: "Submit"
         size_hint: .8, .2
         pos_hint: {"center_x": .5, "center_y": .2}
+        on_release:
+            if password.text == '123':\
+            dba.delete_all_users();\
+            dba.create_users(int(amount_of_users.text));\
+            root.correctPassword()
+            else: root.incorrectPassword()
+
+    Label:
+        id: incorrectPasswd
+        text: ''
+        color: 1, 0, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+    Label:
+        id: correctPasswd
+        text: ''
+        color: 0, 1, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}

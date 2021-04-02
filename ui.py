@@ -1,4 +1,5 @@
 import kivy
+import database_access as dba
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
@@ -34,7 +35,6 @@ class GenerateUsersWindow(Screen):
     pass
 
 
-
 class WindowManager(ScreenManager):
     pass
 
@@ -47,6 +47,12 @@ class PopCreateAppend(FloatLayout):
 
 
 class PopClearAndGenerate(FloatLayout):
+    def incorrectPassword(self):
+        self.ids.incorrectPasswd.text = "Incorrect password"
+
+    def correctPassword(self):
+        self.ids.incorrectPasswd.text = ''
+        self.ids.correctPasswd.text = 'Done'
     pass
 
 
@@ -56,7 +62,7 @@ class Pop(FloatLayout):
 
 class EmulationApp(App):
     def build(self):
-        Window.clearcolor = (0,0,0,0)
+        Window.clearcolor = (0, 0, 0, 0)
         return kv
 
 
@@ -72,5 +78,5 @@ def show_popup_clear_and_generate():
     popupWindow.open()
 
 
-if __name__== "__main__":
+if __name__ == "__main__":
     EmulationApp().run()
