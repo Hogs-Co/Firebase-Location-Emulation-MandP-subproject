@@ -1,0 +1,83 @@
+#:import NoTransition kivy.uix.screenmanager.NoTransition
+#:import ScreenManager kivy.uix.screenmanager
+
+WindowManager:
+    transition: NoTransition()
+    HomeWindow:
+    BrowseWindow:
+    ManageWindow:
+    GenerateUsersWindow:
+
+<GoBackBtn@Button>
+    text: "Go Back"
+    on_release:
+        app.root.current = "homeWin"
+   # background_color: 0.3, 0.4, 0.5, 1
+    size_hint: .12, .08
+    pos_hint: {"x": 0, "y": 0.92}
+
+
+
+<HomeWindow>:
+    name: "homeWin"
+
+    GridLayout:
+        cols: 1
+
+        Label:
+            text: "Emulation project (Alpha)"
+            bold: True
+            italic: True
+            text_size: cm(5), cm(.5)
+            color: 1,1,1,1
+
+        GridLayout:
+            cols: 2
+
+            Button:
+                id: browseBtn
+                text: "Browse"
+                on_release:
+                    app.root.current = "browseWin"
+
+            Button:
+                id: manageBtn
+                text: "Manage"
+                on_release:
+                    app.root.current = "manageWin"
+        Button:
+            id: generateUsersBtn
+            text: "Generate users"
+            on_release:
+                app.root.current = "generateWin"
+
+<BrowseWindow>:
+    name: "browseWin"
+
+    GoBackBtn:
+    TextInput:
+        id: browseInputOut
+        size_hint: 1, .82
+      #  pos_hint: (0, 60)
+        pos_hint: {"x": 0, "y": .1}
+        disabled: True
+    TextInput:
+        id: browseInputIn
+        size_hint: .88, .1
+        pos_hint: {"x": .12, "y": 0}
+        disabled: False
+    Button:
+        id: submitBrowseInput
+        text: "Submit"
+        size_hint: .12, .1
+        pos_hint: {"x": 0, "y": 0}
+
+<ManageWindow>:
+    name: "manageWin"
+
+    GoBackBtn:
+
+<GenerateUsersWindow>:
+    name: "generateWin"
+
+    GoBackBtn:
