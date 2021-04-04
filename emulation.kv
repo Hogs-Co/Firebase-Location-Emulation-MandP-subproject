@@ -93,20 +93,20 @@ WindowManager:
         pos_hint: {"x": .05, "y": .4}
 
         Button:
-            id: appendUsers
+            id: append_users
             text: "Append users list"
             halign: 'center'
             valign: 'middle'
             on_release:
-                root.btnAppend()
+                root.btn_append()
 
         Button:
-            id: deleteAndCreateNewUsers
+            id: delete_and_create_new_users
             text: "Clear users list\nand generate new users"
             halign: 'center'
             valign: 'middle'
             on_release:
-                root.btnClearAndGenerate()
+                root.btn_clear_and_generate()
 
 <PopCreateAppend>:
     Label:
@@ -117,15 +117,27 @@ WindowManager:
         pos_hint: {"center_x": .3, "center_y": .6}
 
     TextInput:
+        id: amount_of_users
         size_hint: None, None
         height: 30
         width: 100
         pos_hint: {"center_x": .6, "center_y": .6}
+        multiline: False
 
     Button:
         text: "Submit"
         size_hint: .8, .2
         pos_hint: {"center_x": .5, "center_y": .2}
+        on_release:
+            dba.create_users(int(amount_of_users.text))
+            root.entry_done()
+
+    Label:
+        id: entry_done
+        text: ''
+        color: 0, 1, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
 
 
 <PopClearAndGenerate>
@@ -168,18 +180,18 @@ WindowManager:
             if password.text == '123':\
             dba.delete_all_users();\
             dba.create_users(int(amount_of_users.text));\
-            root.correctPassword()
-            else: root.incorrectPassword()
+            root.correct_password()
+            else: root.incorrect_password()
 
     Label:
-        id: incorrectPasswd
+        id: incorrect_passwd
         text: ''
         color: 1, 0, 0, 1
         size_hint: .8, .2
         pos_hint: {"center_x": .5, "center_y": .05}
 
     Label:
-        id: correctPasswd
+        id: correct_passwd
         text: ''
         color: 0, 1, 0, 1
         size_hint: .8, .2

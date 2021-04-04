@@ -27,10 +27,10 @@ class ManageWindow(Screen):
 
 
 class GenerateUsersWindow(Screen):
-    def btnAppend(self):
+    def btn_append(self):
         show_popup_append()
 
-    def btnClearAndGenerate(self):
+    def btn_clear_and_generate(self):
         show_popup_clear_and_generate()
     pass
 
@@ -43,16 +43,18 @@ kv = Builder.load_file("emulation.kv")
 
 
 class PopCreateAppend(FloatLayout):
+    def entry_done(self):
+        self.ids.entry_done.text = 'Done'
     pass
 
 
 class PopClearAndGenerate(FloatLayout):
-    def incorrectPassword(self):
-        self.ids.incorrectPasswd.text = "Incorrect password"
+    def incorrect_password(self):
+        self.ids.incorrect_passwd.text = "Incorrect password"
 
-    def correctPassword(self):
-        self.ids.incorrectPasswd.text = ''
-        self.ids.correctPasswd.text = 'Done'
+    def correct_password(self):
+        self.ids.incorrect_passwd.text = ''
+        self.ids.correct_passwd.text = 'Done'
     pass
 
 
