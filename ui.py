@@ -28,18 +28,26 @@ class BrowseWindow(Screen):
         users_list = dba.get_all_users()
         counter = 1
 
-        for x in range(len(users_list)):
-            user_info_dict = users_list[x]
+        for child in [child for child in self.ids.content.children]:
+            self.ids.content.remove_widget(child)
 
-            user_info = ''
-            user_info = f"[b][{counter}][/b]\n"
-            for key in user_info_dict.keys():
-                value = user_info_dict[key]
-                user_info += "[b]{0:20}[/b]{1}\n".format(str(key) + ':', str(value))
-            counter += 1
-            self.ids.content.add_widget(Label(text=user_info, size_hint_y=None, markup=True, text_size=(None, None),
+        if len(users_list) != 0:
+            for x in range(len(users_list)):
+                user_info_dict = users_list[x]
+
+                user_info = ''
+                user_info = f"[b][{counter}][/b]\n"
+                for key in user_info_dict.keys():
+                    value = user_info_dict[key]
+                    user_info += "[b]{0:21}[/b]{1}\n".format(str(key) + ':', str(value))
+                self.ids.content.add_widget(Label(text=user_info, size_hint_y=None, markup=True, text_size=(None, None),
+                                                  height=160))
+                self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
+                counter += 1
+        else:
+            self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True, text_size=(None, None),
                                               height=160))
-            self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
+
     pass
 
 

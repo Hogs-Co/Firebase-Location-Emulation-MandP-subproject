@@ -84,11 +84,15 @@ def get_all_users():
     db = firebase.database()
 
     users_ordered_dict = db.child(USERS_DIR).get().val()
-    users_dict = dict(users_ordered_dict)
+
+    users_dict = {}
     users_list = []
 
-    for value in users_dict.values():
-        users_list.append(value)
+    if users_ordered_dict is not None:
+        users_dict = dict(users_ordered_dict)
+
+        for value in users_dict.values():
+            users_list.append(value)
 
     return users_list
 
