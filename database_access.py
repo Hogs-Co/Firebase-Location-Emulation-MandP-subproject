@@ -1,5 +1,6 @@
 from firebase import Firebase
-import user_creation_and_manipulation as ucam
+import user_creation_and_manipulation
+from collections import OrderedDict
 import time
 import uuid
 
@@ -17,20 +18,22 @@ import uuid
 # consts
 USERS_DIR = "users"
 
-
 # firebase project identifier: fir-test-env-mandp
 # firebase table identifier: fir-test-env-mandp-default-rtdb
 # firebase link: https://fir-test-env-mandp-default-rtdb.firebaseio.com/
 
 config = {
-  "apiKey": "AAAA3KmrBPQ:APA91bFqfELPwbuc7gAS1FkgCland5wKUAEZpEaYUmLdjdjr-rUVF1zBp_5JKHY_TxbsT6ROtiRy28gCd2pEPmHkawl2b"
-            "-ow1H2rkOCknJ6b3npX09_flYlFZnQI1O5R0F-EC_PoJw1D",
-  "authDomain": "fir-test-env-mandp.firebaseapp.com",
-  "databaseURL": "https://fir-test-env-mandp-default-rtdb.firebaseio.com",
-  "storageBucket": "fir-test-env-mandp.appspot.com"
-  # optional - overrides security rules
-  # "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
+    "apiKey": "AAAA3KmrBPQ:APA91bFqfELPwbuc7gAS1FkgCland5wKUAEZpEaYUmLdjdjr-rUVF1zBp_5JKHY_TxbsT6ROtiRy28gCd2pEPmHkawl2b"
+              "-ow1H2rkOCknJ6b3npX09_flYlFZnQI1O5R0F-EC_PoJw1D",
+    "authDomain": "fir-test-env-mandp.firebaseapp.com",
+    "databaseURL": "https://fir-test-env-mandp-default-rtdb.firebaseio.com",
+    "storageBucket": "fir-test-env-mandp.appspot.com"
+    # optional - overrides security rules
+    # "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
 }
+
+keys = ['User_ID', 'Name', 'Surname', 'Email', 'Birth date', 'Age',
+        'Current localization', 'Current used tags', 'User generated tags']
 
 
 def delete_all_users():
@@ -51,7 +54,7 @@ def create_users(number_of_users):
 
     list_of_user_ids = []
 
-    for user in ucam.create_users(number_of_users):
+    for user in user_creation_and_manipulation.create_users(number_of_users):
         db.child(USERS_DIR).child(user.user_id).set(user.create_firebase_entry())
         list_of_user_ids.append(user.user_id)
     return list_of_user_ids
@@ -76,6 +79,20 @@ def update_user_data(given_user_id, **data):
         db.child(USERS_DIR).child(given_user_id).update(data)
 
 
+def get_all_users():
+    firebase = Firebase(config)
+    db = firebase.database()
+
+    users_ordered_dict = db.child(USERS_DIR).get().val()
+    users_dict = dict(users_ordered_dict)
+    users_list = []
+
+    for value in users_dict.values():
+        users_list.append(value)
+
+    return users_list
+
+
 # delete_all_users()
 
 # create_users(10)
@@ -85,3 +102,5 @@ def update_user_data(given_user_id, **data):
 # delete_user(config, USERS_DIR, "01c6482546f64ebcb4f5271400a93526")
 
 # print(check_if_exists(config, USERS_DIR, "01cd2f24549a4f6a8a2cc4ad553ca413"))
+
+# get_all_users()

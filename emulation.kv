@@ -17,8 +17,6 @@ WindowManager:
     size_hint: .12, .08
     pos_hint: {"x": 0, "y": 0.92}
 
-
-
 <HomeWindow>:
     name: "homeWin"
 
@@ -56,22 +54,28 @@ WindowManager:
     name: "browseWin"
 
     GoBackBtn:
-    TextInput:
-        id: browseInputOut
-        size_hint: 1, .82
-      #  pos_hint: (0, 60)
-        pos_hint: {"x": 0, "y": .1}
-        disabled: True
-    TextInput:
-        id: browseInputIn
-        size_hint: .88, .1
-        pos_hint: {"x": .12, "y": 0}
-        disabled: False
+
     Button:
-        id: submitBrowseInput
-        text: "Submit"
-        size_hint: .12, .1
-        pos_hint: {"x": 0, "y": 0}
+        text: "Load data"
+        size_hint: .2, .08
+        pos_hint: {"right": 1, "y": 0.92}
+        on_release:
+            root.create_user_labels()
+
+    ScrollView:
+        id: scroll_content
+        size_hint: (1, .92)
+        bar_width: 10
+        bar_color: 1, 0, 0, 1
+        bar_inactive_color: 0, 0, 1, 1
+        scroll_type: ['bars']
+        do_scroll_y: True
+        do_scroll_x: False
+
+        StackLayout:
+            id: content
+            cols: 1
+            spacing: 5
 
 <ManageWindow>:
     name: "manageWin"
@@ -87,6 +91,7 @@ WindowManager:
         text: 'Generate users'
         size_hint: .9, .2
         pos_hint: {"x": .05, "y": .7}
+
     GridLayout:
         cols: 2
         size_hint: .9, .2
