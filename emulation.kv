@@ -82,6 +82,35 @@ WindowManager:
 
     GoBackBtn:
 
+    Button:
+        text: "Load data"
+        size_hint: .2, .08
+        pos_hint: {"right": 1, "y": 0.92}
+        on_release:
+            root.create_user_labels()
+
+    Button:
+        text: "Delete user"
+        size_hint: .2, .08
+        pos_hint: {"center_x": 0.5, "y": 0.92}
+        on_release:
+            root.btn_delete_user()
+
+    ScrollView:
+        id: scroll_content
+        size_hint: (1, .92)
+        bar_width: 10
+        bar_color: 1, 0, 0, 1
+        bar_inactive_color: 0, 0, 1, 1
+        scroll_type: ['bars']
+        do_scroll_y: True
+        do_scroll_x: False
+
+        StackLayout:
+            id: content
+            cols: 1
+            spacing: 5
+
 <GenerateUsersWindow>:
     name: "generateWin"
 
@@ -197,6 +226,62 @@ WindowManager:
 
     Label:
         id: correct_passwd
+        text: ''
+        color: 0, 1, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+<PopDeleteUser>:
+    Label:
+        text: "Index of the user: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .7}
+
+    TextInput:
+        id: user_index
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .7}
+        multiline: False
+
+    Label:
+        text: "password: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .5}
+
+    TextInput:
+        id: password
+        password: True
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .5}
+        multiline: False
+
+    Button:
+        text: "Submit"
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .2}
+        on_release:
+            if password.text == '123' and str(user_index.text).isdigit() and int(user_index.text) > 0:\
+            dba.delete_user((dba.get_all_users()[int(user_index.text) - 1])[dba.keys[0]]);\
+            root.correct_data()
+            else: root.incorrect_data()
+
+    Label:
+        id: incorrect_data
+        text: ''
+        color: 1, 0, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+    Label:
+        id: correct_data
         text: ''
         color: 0, 1, 0, 1
         size_hint: .8, .2

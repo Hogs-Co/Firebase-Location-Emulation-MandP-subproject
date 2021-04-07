@@ -103,7 +103,7 @@ def get_all_users():
 
 # update_user_data(config, USERS_DIR, "01c6482546f64ebcb4f5271400a93526", Name="Richard", Surname="Idiot")
 
-# delete_user(config, USERS_DIR, "01c6482546f64ebcb4f5271400a93526")
+# delete_user("01c6482546f64ebcb4f5271400a93526")
 
 # print(check_if_exists(config, USERS_DIR, "01cd2f24549a4f6a8a2cc4ad553ca413"))
 

@@ -35,19 +35,17 @@ class BrowseWindow(Screen):
             for x in range(len(users_list)):
                 user_info_dict = users_list[x]
 
-                user_info = ''
                 user_info = f"[b][{counter}][/b]\n"
                 for key in user_info_dict.keys():
                     value = user_info_dict[key]
                     user_info += "[b]{0:21}[/b]{1}\n".format(str(key) + ':', str(value))
-                self.ids.content.add_widget(Label(text=user_info, size_hint_y=None, markup=True, text_size=(None, None),
+                self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True, text_size=(None, None),
                                                   height=160))
                 self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
                 counter += 1
         else:
             self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True, text_size=(None, None),
                                               height=160))
-
     pass
 
 
@@ -56,6 +54,35 @@ class ScrollContent(ScrollView):
 
 
 class ManageWindow(Screen):
+    def create_user_labels(self):
+
+        users_list = dba.get_all_users()
+
+        counter = 1
+
+        for child in [child for child in self.ids.content.children]:
+            self.ids.content.remove_widget(child)
+
+        if len(users_list) != 0:
+            for x in range(len(users_list)):
+                user_info_dict = users_list[x]
+
+                user_info = f"[b][{counter}][/b]\n"
+
+                for key in user_info_dict.keys():
+                    value = user_info_dict[key]
+                    user_info += "[b]{0:21}[/b]{1}\n".format(str(key) + ':', str(value))
+                self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True,
+                                                  text_size=(None, None), height=160))
+                self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
+                counter += 1
+        else:
+            self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True, text_size=(None, None),
+                                              height=160))
+
+    def btn_delete_user(self):
+        show_popup_delete_user()
+
     pass
 
 
@@ -65,6 +92,7 @@ class GenerateUsersWindow(Screen):
 
     def btn_clear_and_generate(self):
         show_popup_clear_and_generate()
+
     pass
 
 
@@ -91,6 +119,16 @@ class PopClearAndGenerate(FloatLayout):
     pass
 
 
+class PopDeleteUser(FloatLayout):
+    def incorrect_data(self):
+        self.ids.incorrect_data.text = "Incorrect password or data"
+
+    def correct_data(self):
+        self.ids.incorrect_data.text = ''
+        self.ids.correct_data.text = 'Done'
+    pass
+
+
 class Pop(FloatLayout):
     pass
 
@@ -103,14 +141,21 @@ class EmulationApp(App):
 
 def show_popup_append():
     show = PopCreateAppend()
-    popupWindow = Popup(title="Append users list", content=show, size_hint=(None,None), size=(400,400))
-    popupWindow.open()
+    popup_window = Popup(title="Append users list", content=show, size_hint=(None,None), size=(400, 400))
+    popup_window.open()
 
 
 def show_popup_clear_and_generate():
     show = PopClearAndGenerate()
-    popupWindow = Popup(title="Clear current users list and generate new", content=show, size_hint=(None,None), size=(400,400))
-    popupWindow.open()
+    popup_window = Popup(title="Clear current users list and generate new", content=show, size_hint=(None,None),
+                         size=(400, 400))
+    popup_window.open()
+
+
+def show_popup_delete_user():
+    show = PopDeleteUser()
+    popup_window = Popup(title="Delete chose user", content=show, size_hint=(None,None), size=(400, 400))
+    popup_window.open()
 
 
 if __name__ == "__main__":
