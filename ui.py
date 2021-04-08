@@ -39,13 +39,13 @@ class BrowseWindow(Screen):
                 for key in user_info_dict.keys():
                     value = user_info_dict[key]
                     user_info += "[b]{0:22}[/b]{1}\n".format(str(key) + ':', str(value))
-                self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True, text_size=(None, None),
-                                                  height=160))
+                self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True,
+                                                  text_size=(None, None), height=160))
                 self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
                 counter += 1
         else:
-            self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True, text_size=(None, None),
-                                              height=160))
+            self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True,
+                                              text_size=(None, None), height=160))
     pass
 
 
@@ -77,8 +77,8 @@ class ManageWindow(Screen):
                 self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
                 counter += 1
         else:
-            self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True, text_size=(None, None),
-                                              height=160))
+            self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True,
+                                              text_size=(None, None), height=160))
 
     def btn_delete_user(self):
         show_popup_delete_user()
@@ -168,20 +168,20 @@ class EmulationApp(App):
 
 def show_popup_append():
     show = PopCreateAppend()
-    popup_window = Popup(title="Append users list", content=show, size_hint=(None,None), size=(400, 400))
+    popup_window = Popup(title="Append users list", content=show, size_hint=(None, None), size=(400, 400))
     popup_window.open()
 
 
 def show_popup_clear_and_generate():
     show = PopClearAndGenerate()
-    popup_window = Popup(title="Clear current users list and generate new", content=show, size_hint=(None,None),
+    popup_window = Popup(title="Clear current users list and generate new", content=show, size_hint=(None, None),
                          size=(400, 400))
     popup_window.open()
 
 
 def show_popup_delete_user():
     show = PopDeleteUser()
-    popup_window = Popup(title="Delete chosen user", content=show, size_hint=(None,None), size=(400, 400))
+    popup_window = Popup(title="Delete chosen user", content=show, size_hint=(None, None), size=(400, 400))
     popup_window.open()
 
 
