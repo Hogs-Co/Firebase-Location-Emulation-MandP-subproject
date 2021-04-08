@@ -6,7 +6,7 @@ from random import randint
 
 
 class User:
-    def __init__(self, user_id, name, surname, birth_date):  # birth_date in format datetime.date(yyyy, mm, dd)
+    def __init__(self, user_id, name, surname, birth_date):  # birth_date in format datetime.date(yyyy-mm-dd)
         self.user_id = user_id
         self.name = str(name).capitalize()
         self.surname = str(surname).capitalize()
