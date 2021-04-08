@@ -72,7 +72,7 @@ def check_if_exists(given_user_id):
     return False
 
 
-def update_user_data(given_user_id, **data):
+def update_user_data(given_user_id, data):
     if check_if_exists(given_user_id):
         firebase = Firebase(config)
         db = firebase.database()
@@ -101,7 +101,7 @@ def get_all_users():
 
 # create_users(10)
 
-# update_user_data(config, USERS_DIR, "01c6482546f64ebcb4f5271400a93526", Name="Richard", Surname="Idiot")
+# update_user_data("09f36741fc884f80aed60187b415f25c", {"Age": 26, "Name": "Brian", "Surname": "Poopiehead"})
 
 # delete_user("01c6482546f64ebcb4f5271400a93526")
 

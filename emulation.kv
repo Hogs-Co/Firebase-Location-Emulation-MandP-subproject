@@ -24,7 +24,7 @@ WindowManager:
         cols: 1
 
         Label:
-            text: "Emulation app (Alpha v 0.0.4)"
+            text: "Emulation app (Alpha v0.0.5)"
             bold: True
             italic: True
             color: 1,1,1,1
@@ -60,7 +60,7 @@ WindowManager:
         size_hint: .2, .08
         pos_hint: {"right": 1, "y": 0.92}
         on_release:
-            root.create_user_labels()
+            root.btn_create_user_labels()
 
     ScrollView:
         id: scroll_content
@@ -87,14 +87,21 @@ WindowManager:
         size_hint: .2, .08
         pos_hint: {"right": 1, "y": 0.92}
         on_release:
-            root.create_user_labels()
+            root.btn_create_user_labels()
 
     Button:
         text: "Delete user"
         size_hint: .2, .08
-        pos_hint: {"center_x": 0.5, "y": 0.92}
+        pos_hint: {"right": 0.8, "y": 0.92}
         on_release:
             root.btn_delete_user()
+
+    Button:
+        text: "Update user data"
+        size_hint: .25, .08
+        pos_hint: {"right": 0.6, "y": 0.92}
+        on_release:
+            root.btn_update_user_data()
 
     ScrollView:
         id: scroll_content
@@ -270,6 +277,111 @@ WindowManager:
         on_release:
             if password.text == '123' and str(user_index.text).isdigit() and int(user_index.text) > 0:\
             dba.delete_user((dba.get_all_users()[int(user_index.text) - 1])[dba.keys[0]]);\
+            root.correct_data()
+            else: root.incorrect_data()
+
+    Label:
+        id: incorrect_data
+        text: ''
+        color: 1, 0, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+    Label:
+        id: correct_data
+        text: ''
+        color: 0, 1, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+<PopUpdateUserData>:
+    Label:
+        text: "Index of the user: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .9}
+
+    TextInput:
+        id: user_index
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .9}
+        multiline: False
+
+    Label:
+        text: "password: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .8}
+
+    TextInput:
+        id: password
+        password: True
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .8}
+        multiline: False
+
+    Label:
+        text: "data type: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .7}
+
+    Label:
+        text: "separate with semicolons"
+        font_size: 10
+        color: 0, 1, .5, 1
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .65}
+
+    TextInput:
+        id: data_type
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .7}
+        multiline: True
+
+    Label:
+        text: "new data: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .6}
+
+    Label:
+        text: "separate with semicolons"
+        font_size: 10
+        color: 0, 1, .5, 1
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .55}
+
+    TextInput:
+        id: new_data
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .6}
+        multiline: True
+
+    Button:
+        text: "Submit"
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .2}
+        on_release:
+            data = root.generate_data_dict(data_type.text, new_data.text)
+            if password.text == '123':\
+            dba.update_user_data((dba.get_all_users()[int(user_index.text) - 1])[dba.keys[0]], data);\
             root.correct_data()
             else: root.incorrect_data()
 

@@ -23,7 +23,7 @@ class HomeWindow(Screen):
 
 
 class BrowseWindow(Screen):
-    def create_user_labels(self):
+    def btn_create_user_labels(self):
 
         users_list = dba.get_all_users()
         counter = 1
@@ -38,7 +38,7 @@ class BrowseWindow(Screen):
                 user_info = f"[b][{counter}][/b]\n"
                 for key in user_info_dict.keys():
                     value = user_info_dict[key]
-                    user_info += "[b]{0:21}[/b]{1}\n".format(str(key) + ':', str(value))
+                    user_info += "[b]{0:22}[/b]{1}\n".format(str(key) + ':', str(value))
                 self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True, text_size=(None, None),
                                                   height=160))
                 self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
@@ -54,7 +54,7 @@ class ScrollContent(ScrollView):
 
 
 class ManageWindow(Screen):
-    def create_user_labels(self):
+    def btn_create_user_labels(self):
 
         users_list = dba.get_all_users()
 
@@ -71,7 +71,7 @@ class ManageWindow(Screen):
 
                 for key in user_info_dict.keys():
                     value = user_info_dict[key]
-                    user_info += "[b]{0:21}[/b]{1}\n".format(str(key) + ':', str(value))
+                    user_info += "[b]{0:22}[/b]{1}\n".format(str(key) + ':', str(value))
                 self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True,
                                                   text_size=(None, None), height=160))
                 self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
@@ -82,6 +82,9 @@ class ManageWindow(Screen):
 
     def btn_delete_user(self):
         show_popup_delete_user()
+
+    def btn_update_user_data(self):
+        show_popup_update_user_data()
 
     pass
 
@@ -129,6 +132,30 @@ class PopDeleteUser(FloatLayout):
     pass
 
 
+class PopUpdateUserData(FloatLayout):
+    def incorrect_data(self):
+        self.ids.incorrect_data.text = "Incorrect password or data"
+
+    def correct_data(self):
+        self.ids.incorrect_data.text = ''
+        self.ids.correct_data.text = 'Done'
+
+    # @staticmethod
+    def generate_data_dict(self, keys_string, data_string):
+        keys_list = keys_string.split(sep=";")
+        data_list = data_string.split(sep=";")
+
+        data_dict = {}
+        for key, value in zip(keys_list, data_list):
+            if value.isdigit():
+                data_dict[key] = int(value)
+            else:
+                data_dict[key] = value
+        return data_dict
+
+    pass
+
+
 class Pop(FloatLayout):
     pass
 
@@ -154,7 +181,13 @@ def show_popup_clear_and_generate():
 
 def show_popup_delete_user():
     show = PopDeleteUser()
-    popup_window = Popup(title="Delete chose user", content=show, size_hint=(None,None), size=(400, 400))
+    popup_window = Popup(title="Delete chosen user", content=show, size_hint=(None,None), size=(400, 400))
+    popup_window.open()
+
+
+def show_popup_update_user_data():
+    show = PopUpdateUserData()
+    popup_window = Popup(title="Update chosen user's data", content=show, size_hint=(None, None), size=(400, 400))
     popup_window.open()
 
 
