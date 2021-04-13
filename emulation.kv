@@ -2,6 +2,12 @@
 #:import ScreenManager kivy.uix.screenmanager
 #:import dba database_access
 
+#There are three keywords specific to Kv language:
+#
+#app: always refers to the instance of your application.
+#root: refers to the base widget/template in the current rule
+#self: always refer to the current widget
+
 WindowManager:
     transition: NoTransition()
     HomeWindow:
@@ -22,7 +28,10 @@ WindowManager:
     size_hint: .2, .08
     pos_hint: {"right": 1, "y": 0.92}
     on_release:
-        root.btn_create_user_labels()
+        if app.root.current == "browseWin":\
+        app.root.get_screen(app.root.current).btn_create_user_labels()
+        elif app.root.current == "manageWin":\
+        app.root.get_screen(app.root.current).btn_create_user_labels()
 
 <HomeWindow>:
     name: "homeWin"
@@ -64,6 +73,13 @@ WindowManager:
 
     LoadDataBtn:
 
+#    Button:
+#        text: "Load data"
+#        size_hint: .2, .08
+#        pos_hint: {"right": 1, "y": 0.92}
+#        on_release:
+#            root.btn_create_user_labels()
+
     ScrollView:
         id: scroll_content
         size_hint: (1, .92)
@@ -85,6 +101,13 @@ WindowManager:
     GoBackBtn:
 
     LoadDataBtn:
+
+#    Button:
+#        text: "Load data"
+#        size_hint: .2, .08
+#        pos_hint: {"right": 1, "y": 0.92}
+#        on_release:
+#            root.btn_create_user_labels()
 
     Button:
         text: "Delete user"
