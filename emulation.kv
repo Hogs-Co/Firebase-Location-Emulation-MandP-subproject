@@ -17,6 +17,13 @@ WindowManager:
     size_hint: .12, .08
     pos_hint: {"x": 0, "y": 0.92}
 
+<LoadDataBtn@Button>
+    text: "Load data"
+    size_hint: .2, .08
+    pos_hint: {"right": 1, "y": 0.92}
+    on_release:
+        root.btn_create_user_labels()
+
 <HomeWindow>:
     name: "homeWin"
 
@@ -55,12 +62,7 @@ WindowManager:
 
     GoBackBtn:
 
-    Button:
-        text: "Load data"
-        size_hint: .2, .08
-        pos_hint: {"right": 1, "y": 0.92}
-        on_release:
-            root.btn_create_user_labels()
+    LoadDataBtn:
 
     ScrollView:
         id: scroll_content
@@ -82,12 +84,7 @@ WindowManager:
 
     GoBackBtn:
 
-    Button:
-        text: "Load data"
-        size_hint: .2, .08
-        pos_hint: {"right": 1, "y": 0.92}
-        on_release:
-            root.btn_create_user_labels()
+    LoadDataBtn:
 
     Button:
         text: "Delete user"
