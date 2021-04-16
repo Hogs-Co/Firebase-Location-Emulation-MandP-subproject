@@ -22,10 +22,33 @@ class HomeWindow(Screen):
     pass
 
 
+class DeleteUserBtn(Button):
+    def __init__(self, user_id):
+        super().__init__()
+        self.pos_hint = {'right': 1, 'bottom': 0}
+        self.size_hint = (.15, None)
+        self.height = 175
+        self.text = "Delete\nuser"
+
+    pass
+
+
+class UpdateUserDataBtn(Button):
+    def __init__(self, user_id):
+        super().__init__()
+        self.pos_hint = {'right': 1, 'bottom': 0}
+        self.size_hint = (.15, None)
+        self.height = 175
+        self.text = "Update\nuser\ndata"
+
+    pass
+
+
 class BrowseWindow(Screen):
     def btn_create_user_labels(self):
 
         users_list = dba.get_all_users()
+
         counter = 1
 
         for child in [child for child in self.ids.content.children]:
@@ -36,16 +59,18 @@ class BrowseWindow(Screen):
                 user_info_dict = users_list[x]
 
                 user_info = f"[b][{counter}][/b]\n"
+
                 for key in user_info_dict.keys():
                     value = user_info_dict[key]
                     user_info += "[b]{0:22}[/b]{1}\n".format(str(key) + ':', str(value))
                 self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True,
                                                   text_size=(None, None), height=160))
-                self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
+                self.ids.content.size_hint = (1, (179.5 * len(users_list)) / 600)
                 counter += 1
         else:
             self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True,
                                               text_size=(None, None), height=160))
+
     pass
 
 
@@ -57,7 +82,6 @@ class ManageWindow(Screen):
     def btn_create_user_labels(self):
 
         users_list = dba.get_all_users()
-
         counter = 1
 
         for child in [child for child in self.ids.content.children]:
@@ -68,13 +92,19 @@ class ManageWindow(Screen):
                 user_info_dict = users_list[x]
 
                 user_info = f"[b][{counter}][/b]\n"
-
                 for key in user_info_dict.keys():
                     value = user_info_dict[key]
                     user_info += "[b]{0:22}[/b]{1}\n".format(str(key) + ':', str(value))
-                self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True,
-                                                  text_size=(None, None), height=160))
-                self.ids.content.size_hint = (1, (179.5*len(users_list))/600)
+                # self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True,
+                #                                   text_size=(None, None), height=160))
+                delete_user_btn = DeleteUserBtn()   #TODO trzeba dodac zmienne i zmienic dzialanie funkcji usuwajacych
+                update_user_data_btn = UpdateUserDataBtn()  #TODO trzeba dodac zmienne i zmienic dzialanie funkcji edytujacych
+                self.ids.content.add_widget(Label(text=user_info, size_hint=(.7, None), markup=True,
+                                                  pos_hint={'right': 1, 'bottom': 0}, height=175))
+                self.ids.content.add_widget(delete_user_btn)
+                self.ids.content.add_widget(update_user_data_btn)
+                self.ids.content.size_hint = (1, None)
+                self.ids.content.height = (175+10)*len(users_list)
                 counter += 1
         else:
             self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True,
@@ -109,6 +139,7 @@ kv = Builder.load_file("emulation.kv")
 class PopCreateAppend(FloatLayout):
     def entry_done(self):
         self.ids.entry_done.text = 'Done'
+
     pass
 
 
@@ -119,6 +150,7 @@ class PopClearAndGenerate(FloatLayout):
     def correct_password(self):
         self.ids.incorrect_passwd.text = ''
         self.ids.correct_passwd.text = 'Done'
+
     pass
 
 
@@ -129,6 +161,7 @@ class PopDeleteUser(FloatLayout):
     def correct_data(self):
         self.ids.incorrect_data.text = ''
         self.ids.correct_data.text = 'Done'
+
     pass
 
 

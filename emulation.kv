@@ -28,9 +28,6 @@ WindowManager:
     size_hint: .2, .08
     pos_hint: {"right": 1, "y": 0.92}
     on_release:
-        if app.root.current == "browseWin":\
-        app.root.get_screen(app.root.current).btn_create_user_labels()
-        elif app.root.current == "manageWin":\
         app.root.get_screen(app.root.current).btn_create_user_labels()
 
 <HomeWindow>:
@@ -54,12 +51,15 @@ WindowManager:
                 text: "Browse users"
                 on_release:
                     app.root.current = "browseWin"
+                    app.root.get_screen(app.root.current).btn_create_user_labels()
 
             Button:
                 id: manageBtn
                 text: "Manage users"
                 on_release:
                     app.root.current = "manageWin"
+                    app.root.get_screen(app.root.current).btn_create_user_labels()
+
         Button:
             id: generateUsersBtn
             text: "Generate users"
