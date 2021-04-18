@@ -73,13 +73,6 @@ WindowManager:
 
     LoadDataBtn:
 
-#    Button:
-#        text: "Load data"
-#        size_hint: .2, .08
-#        pos_hint: {"right": 1, "y": 0.92}
-#        on_release:
-#            root.btn_create_user_labels()
-
     ScrollView:
         id: scroll_content
         size_hint: (1, .92)
@@ -101,27 +94,8 @@ WindowManager:
     GoBackBtn:
 
     LoadDataBtn:
-
-#    Button:
-#        text: "Load data"
-#        size_hint: .2, .08
-#        pos_hint: {"right": 1, "y": 0.92}
-#        on_release:
-#            root.btn_create_user_labels()
-
-    Button:
-        text: "Delete user"
-        size_hint: .2, .08
-        pos_hint: {"right": 0.8, "y": 0.92}
         on_release:
-            root.btn_delete_user()
-
-    Button:
-        text: "Update user data"
-        size_hint: .25, .08
-        pos_hint: {"right": 0.6, "y": 0.92}
-        on_release:
-            root.btn_update_user_data()
+            app.new_load = True
 
     ScrollView:
         id: scroll_content
@@ -260,26 +234,11 @@ WindowManager:
 
 <PopDeleteUser>:
     Label:
-        text: "Index of the user: "
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .3, "center_y": .7}
-
-    TextInput:
-        id: user_index
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .6, "center_y": .7}
-        multiline: False
-
-    Label:
         text: "password: "
         size_hint: None, None
         height: 30
         width: 100
-        pos_hint: {"center_x": .3, "center_y": .5}
+        pos_hint: {"center_x": .3, "center_y": .6}
 
     TextInput:
         id: password
@@ -287,7 +246,7 @@ WindowManager:
         size_hint: None, None
         height: 30
         width: 100
-        pos_hint: {"center_x": .6, "center_y": .5}
+        pos_hint: {"center_x": .6, "center_y": .6}
         multiline: False
 
     Button:
@@ -295,9 +254,10 @@ WindowManager:
         size_hint: .8, .2
         pos_hint: {"center_x": .5, "center_y": .2}
         on_release:
-            if password.text == '123' and str(user_index.text).isdigit() and int(user_index.text) > 0:\
-            dba.delete_user((dba.get_all_users()[int(user_index.text) - 1])[dba.keys[0]]);\
-            root.correct_data()
+            if password.text == '123' and app.new_load:\
+            dba.delete_user(root.userid);\
+            root.correct_data();\
+            app.new_load = False
             else: root.incorrect_data()
 
     Label:
@@ -315,94 +275,97 @@ WindowManager:
         pos_hint: {"center_x": .5, "center_y": .05}
 
 <PopUpdateUserData>:
-    Label:
-        text: "Index of the user: "
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .3, "center_y": .9}
+    GridLayout:
+        cols: 2
+        rows: 5
+        size_hint: .9, .8
+        pos_hint: {"center_x": .5, "center_y": .5}
+        # name box
+        Label:
+            text: "name: "
+            size_hint: None, None
+            height: 30
+            width: 200
+    #        pos_hint: {"center_x": .1, "center_y": .9}
 
-    TextInput:
-        id: user_index
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .6, "center_y": .9}
-        multiline: False
+        TextInput:
+            id: Name
+            size_hint: None, None
+            height: 30
+            width: 100
+            pos_hint: {"center_x": .3, "center_y": .9}
+            multiline: False
 
-    Label:
-        text: "password: "
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .3, "center_y": .8}
+        # surname box
+        Label:
+            text: "surname: "
+            size_hint: None, None
+            height: 30
+            width: 200
 
-    TextInput:
-        id: password
-        password: True
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .6, "center_y": .8}
-        multiline: False
+        TextInput:
+            id: Surname
+            size_hint: None, None
+            height: 30
+            width: 100
+            multiline: False
 
-    Label:
-        text: "data type: "
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .3, "center_y": .7}
+        # email box
+        Label:
+            text: "email: "
+            size_hint: None, None
+            height: 30
+            width: 200
 
-    Label:
-        text: "separate with semicolons"
-        font_size: 10
-        color: 0, 1, .5, 1
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .3, "center_y": .65}
+        TextInput:
+            id: Email
+            size_hint: None, None
+            height: 30
+            width: 100
+            multiline: True
 
-    TextInput:
-        id: data_type
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .6, "center_y": .7}
-        multiline: True
+        # localization
+        Label:
+            text: "coords (split with ;) : "
+            size_hint: None, None
+            height: 30
+            width: 200
+            pos_hint: {"center_x": .6, "center_y": .9}
 
-    Label:
-        text: "new data: "
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .3, "center_y": .6}
+        TextInput:
+            id: Current_localization
+            size_hint: None, None
+            height: 30
+            width: 100
+            multiline: False
 
-    Label:
-        text: "separate with semicolons"
-        font_size: 10
-        color: 0, 1, .5, 1
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .3, "center_y": .55}
+        # password box
+        Label:
+            text: "password: "
+            size_hint: None, None
+            height: 30
+            width: 200
+            pos_hint: {"center_x": .3, "center_y": .4}
 
-    TextInput:
-        id: new_data
-        size_hint: None, None
-        height: 30
-        width: 100
-        pos_hint: {"center_x": .6, "center_y": .6}
-        multiline: True
+        TextInput:
+            id: password
+            password: True
+            size_hint: None, None
+            height: 30
+            width: 100
+            pos_hint: {"center_x": .6, "center_y": .4}
+            multiline: False
 
     Button:
         text: "Submit"
         size_hint: .8, .2
         pos_hint: {"center_x": .5, "center_y": .2}
         on_release:
-            data = root.generate_data_dict(data_type.text, new_data.text)
-            if password.text == '123':\
-            dba.update_user_data((dba.get_all_users()[int(user_index.text) - 1])[dba.keys[0]], data);\
-            root.correct_data()
+            if password.text == '123' and app.new_load and root.generate_data_dict() is not None:\
+            new_data = root.generate_data_dict();\
+            dba.update_user_data(root.userid, new_data);\
+            root.correct_data();\
+            app.new_load = False
             else: root.incorrect_data()
 
     Label:

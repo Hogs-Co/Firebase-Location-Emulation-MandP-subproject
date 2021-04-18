@@ -1,5 +1,5 @@
 from firebase import Firebase
-import user_creation_and_manipulation
+import user_creation_and_manipulation as ucm
 from collections import OrderedDict
 import time
 import uuid
@@ -9,10 +9,10 @@ import uuid
 # 'Name' string
 # 'Surname' string
 # 'Email' string which must be compliant with ucam.User.check_email()
-# 'Birth date' in a date format - passed to firebase as string
+# 'Birth_date' in a date format - passed to firebase as string
 # 'Age': int - amount of years from birth date to today
-# 'Current localization': two argument list - [longitude, latitude]
-# 'Current used tags': list of maximum 4 custom tags and 2 age tags
+# 'Current_localization': two argument list - [longitude, latitude]
+# 'Current_used_tags': list of maximum 4 custom tags and 2 age tags
 
 
 # consts
@@ -32,8 +32,8 @@ config = {
     # "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
 }
 
-keys = ['User_ID', 'Name', 'Surname', 'Email', 'Birth date', 'Age',
-        'Current localization', 'Current used tags', 'User generated tags']
+keys = ['User_ID', 'Name', 'Surname', 'Email', 'Birth_date', 'Age',
+        'Current_localization', 'Current_used_tags', 'User_generated_tags']
 
 
 def delete_all_users():
@@ -54,7 +54,7 @@ def create_users(number_of_users):
 
     list_of_user_ids = []
 
-    for user in user_creation_and_manipulation.create_users(number_of_users):
+    for user in ucm.create_users(number_of_users):
         db.child(USERS_DIR).child(user.user_id).set(user.create_firebase_entry())
         list_of_user_ids.append(user.user_id)
     return list_of_user_ids
@@ -73,10 +73,11 @@ def check_if_exists(given_user_id):
 
 
 def update_user_data(given_user_id, data):
-    if check_if_exists(given_user_id):
-        firebase = Firebase(config)
-        db = firebase.database()
-        db.child(USERS_DIR).child(given_user_id).update(data)
+    if data is not None:
+        if check_if_exists(given_user_id):
+            firebase = Firebase(config)
+            db = firebase.database()
+            db.child(USERS_DIR).child(given_user_id).update(data)
 
 
 def get_all_users():
@@ -85,7 +86,6 @@ def get_all_users():
 
     users_ordered_dict = db.child(USERS_DIR).get().val()
 
-    users_dict = {}
     users_list = []
 
     if users_ordered_dict is not None:

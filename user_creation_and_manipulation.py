@@ -32,7 +32,6 @@ class User:
         else:
             self.age = today.year - self.birth_date.year
 
-    # @staticmethod
     def check_email(self, email):
         regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
         if re.search(regex, email):
@@ -52,9 +51,9 @@ class User:
             'Email': self.email,
             'Birth date': str(self.birth_date),
             'Age': self.age,
-            'Current localization': self.localization,
-            'Current used tags': self.tags,
-            'User generated tags': self.user_generated_tags
+            'Current_localization': self.localization,
+            'Current_used_tags': self.tags,
+            'User_generated_tags': self.user_generated_tags
         }
         return data
 
@@ -73,3 +72,9 @@ def create_users(num_of_users):
         list_of_users.append(user)
     return list_of_users
 
+
+def check_email(email):
+    regex = '^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$'
+    if re.search(regex, email):
+        return True
+    return False
