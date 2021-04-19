@@ -90,6 +90,7 @@ class ScrollContent(ScrollView):
 
 
 class ManageWindow(Screen):
+    # @staticmethod
     def btn_create_user_labels(self):
 
         users_list = dba.get_all_users()
