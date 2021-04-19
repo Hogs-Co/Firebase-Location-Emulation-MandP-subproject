@@ -29,7 +29,7 @@ config = {
     "databaseURL": "https://fir-test-env-mandp-default-rtdb.firebaseio.com",
     "storageBucket": "fir-test-env-mandp.appspot.com"
     # optional - overrides security rules
-    # "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
+    # , "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
 }
 
 keys = ['User_ID', 'Name', 'Surname', 'Email', 'Birth_date', 'Age',
