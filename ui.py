@@ -239,7 +239,7 @@ def show_popup_update_user_data(userid):
 class EmulationApp(App):
     def __init__(self):
         super().__init__()
-        self.new_load = False
+        self.new_load = True
 
     def build(self):
         Window.clearcolor = (0, 0, 0, 0)
