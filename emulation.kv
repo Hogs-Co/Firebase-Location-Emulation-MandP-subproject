@@ -13,14 +13,16 @@ WindowManager:
     HomeWindow:
     BrowseWindow:
     ManageWindow:
+    GenerateWindow:
     GenerateUsersWindow:
+    GenerateTagsWindow:
 
 <GoBackBtn@Button>
-    text: "Go Back"
+    text: "Main menu"
     on_release:
         app.root.current = "homeWin"
    # background_color: 0.3, 0.4, 0.5, 1
-    size_hint: .12, .08
+    size_hint: .15, .08
     pos_hint: {"x": 0, "y": 0.92}
 
 <LoadDataBtn@Button>
@@ -61,8 +63,8 @@ WindowManager:
                     app.root.get_screen(app.root.current).btn_create_user_labels()
 
         Button:
-            id: generateUsersBtn
-            text: "Generate users"
+            id: generate
+            text: "Generate"
             on_release:
                 app.root.current = "generateWin"
 
@@ -112,8 +114,40 @@ WindowManager:
             cols: 1
             spacing: 5
 
-<GenerateUsersWindow>:
+<GenerateWindow>
     name: "generateWin"
+
+    GoBackBtn:
+
+    Label:
+        text: 'Generate'
+        size_hint: .9, .2
+        pos_hint: {"x": .05, "y": .7}
+
+    GridLayout:
+        cols: 2
+        size_hint: .9, .2
+        pos_hint: {"x": .05, "y": .4}
+
+        Button:
+            id: generate_tags_btn
+            text: "Tags"
+            halign: 'center'
+            valign: 'middle'
+            on_release:
+                app.root.current = "generateTagsWin"
+
+        Button:
+            id: generate_users_btn
+            text: "Users"
+            halign: 'center'
+            valign: 'middle'
+            on_release:
+                app.root.current = "generateUsersWin"
+
+
+<GenerateUsersWindow>:
+    name: "generateUsersWin"
 
     GoBackBtn:
 
@@ -142,6 +176,41 @@ WindowManager:
             valign: 'middle'
             on_release:
                 root.btn_clear_and_generate()
+
+<GenerateTagsWindow>
+    name: "generateTagsWin"
+
+    GoBackBtn:
+
+    GridLayout:
+        cols: 1
+
+        Label:
+            text: "Generate tags"
+            color: 1,1,1,1
+
+
+        GridLayout:
+            cols: 2
+
+            Button:
+                id: addNewTagsBtn
+                text: "Add new tags"
+                on_release:
+                    root.btn_add_new_tags()
+
+
+            Button:
+                id: deleteAllTagsBtn
+                text: "Delete all tags"
+                on_release:
+                    root.btn_delete_all_tags()
+
+        Button:
+            id: addUsersToTagsBtn
+            text: "Add users to tags"
+            on_release:
+                root.btn_add_users_to_tags()
 
 <PopCreateAppend>:
     Label:
@@ -377,6 +446,147 @@ WindowManager:
 
     Label:
         id: correct_data
+        text: ''
+        color: 0, 1, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+
+<PopAddNewTags>:
+    Label:
+        text: "amount: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .6}
+
+    TextInput:
+        id: amount_of_tags
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .6}
+        multiline: False
+
+    Button:
+        text: "Submit"
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .2}
+        on_release:
+            root.entry_done()
+
+    Label:
+        id: entry_done
+        text: ''
+        color: 0, 1, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+<PopDeleteAllTags>:
+    Label:
+        text: "password: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .6}
+
+    TextInput:
+        id: password
+        password: True
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .6}
+        multiline: False
+
+    Button:
+        text: "Submit"
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .2}
+        on_release:
+            if password.text == '123' and app.new_load:\
+            root.correct_data();
+            else: root.incorrect_data()
+
+    Label:
+        id: incorrect_data
+        text: ''
+        color: 1, 0, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+    Label:
+        id: correct_data
+        text: ''
+        color: 0, 1, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+
+<PopAddUsersToTags>:
+    Label:
+        text: "Tag: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .9}
+
+    TextInput:
+        id: tag_id
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .9}
+        multiline: False
+    Label:
+        text: "User: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .7}
+
+    TextInput:
+        id: user_id
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .7}
+        multiline: False
+
+    Label:
+        text: "password: "
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .3, "center_y": .5}
+
+    TextInput:
+        id: password
+        password: True
+        size_hint: None, None
+        height: 30
+        width: 100
+        pos_hint: {"center_x": .6, "center_y": .5}
+        multiline: False
+
+    Button:
+        text: "Submit"
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .2}
+        on_release:
+            if password.text == '123':\
+            root.correct_password()
+            else: root.incorrect_password()
+
+    Label:
+        id: incorrect_passwd
+        text: ''
+        color: 1, 0, 0, 1
+        size_hint: .8, .2
+        pos_hint: {"center_x": .5, "center_y": .05}
+
+    Label:
+        id: correct_passwd
         text: ''
         color: 0, 1, 0, 1
         size_hint: .8, .2

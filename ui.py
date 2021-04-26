@@ -125,6 +125,10 @@ class ManageWindow(Screen):
     pass
 
 
+class GenerateWindow(Screen):
+    pass
+
+
 class GenerateUsersWindow(Screen):
     def btn_append(self):
         show_popup_append()
@@ -132,6 +136,18 @@ class GenerateUsersWindow(Screen):
     def btn_clear_and_generate(self):
         show_popup_clear_and_generate()
 
+    pass
+
+
+class GenerateTagsWindow(Screen):
+    def btn_add_new_tags(self):
+        show_popup_add_new_tags()
+
+    def btn_delete_all_tags(self):
+        show_popup_delete_all_tags()
+
+    def btn_add_users_to_tags(self):
+        show_popup_add_users_to_tags()
     pass
 
 
@@ -205,7 +221,28 @@ class PopUpdateUserData(FloatLayout):
     pass
 
 
-class Pop(FloatLayout):
+class PopAddNewTags(FloatLayout):
+    def entry_done(self):
+        self.ids.entry_done.text = 'Done'
+    pass
+
+
+class PopDeleteAllTags(FloatLayout):
+    def incorrect_data(self):
+        self.ids.incorrect_data.text = "Incorrect password"
+
+    def correct_data(self):
+        self.ids.incorrect_data.text = ''
+        self.ids.correct_data.text = 'Done'
+    pass
+
+class PopAddUsersToTags(FloatLayout):
+    def incorrect_password(self):
+        self.ids.incorrect_passwd.text = "Incorrect password"
+
+    def correct_password(self):
+        self.ids.incorrect_passwd.text = ''
+        self.ids.correct_passwd.text = 'Done'
     pass
 
 
@@ -233,6 +270,28 @@ def show_popup_update_user_data(userid):
     show = PopUpdateUserData(userid)
     popup_window = Popup(title="Update chosen user's data", content=show, size_hint=(None, None), size=(400, 400))
     popup_window.open()
+
+
+# Popup call functions: Tags
+def show_popup_add_new_tags():
+    show = PopAddNewTags()
+    popup_window = Popup(title="Add new tags", content=show, size_hint=(None, None), size=(400, 400))
+    popup_window.open()
+
+
+def show_popup_delete_all_tags():
+    show = PopDeleteAllTags()
+    popup_window = Popup(title="Delete all tags", content=show, size_hint=(None, None), size=(400, 400))
+    popup_window.open()
+
+
+def show_popup_add_users_to_tags():
+    show = PopAddUsersToTags()
+    popup_window = Popup(title="Add users to tags", content=show, size_hint=(None, None), size=(400, 400))
+    popup_window.open()
+
+
+
 
 
 # App call function
