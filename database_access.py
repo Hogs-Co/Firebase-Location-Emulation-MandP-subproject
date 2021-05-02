@@ -1,5 +1,7 @@
 from firebase import Firebase
 import user_creation_and_manipulation as ucm
+import tag_creation_and_manipulation as tcm
+from names import get_first_name
 from collections import OrderedDict
 import time
 import uuid
@@ -17,6 +19,7 @@ import uuid
 
 # consts
 USERS_DIR = "users"
+TAGS_DIR = "tags"
 
 # firebase project identifier: fir-test-env-mandp
 # firebase table identifier: fir-test-env-mandp-default-rtdb
@@ -29,13 +32,73 @@ config = {
     "databaseURL": "https://fir-test-env-mandp-default-rtdb.firebaseio.com",
     "storageBucket": "fir-test-env-mandp.appspot.com"
     # optional - overrides security rules
-    # , "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
+    , "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
 }
 
-keys = ['User_ID', 'Name', 'Surname', 'Email', 'Birth_date', 'Age',
-        'Current_localization', 'Current_used_tags', 'User_generated_tags']
+tag_keys = ['Name', 'Creation_date', 'Author', 'Users']
+
+user_keys = ['User_ID', 'Name', 'Surname', 'Email', 'Birth_date', 'Age',
+             'Current_localization', 'Current_used_tags', 'User_generated_tags']
 
 
+# tag centered functions
+def create_tags(num_of_tags):
+    firebase = Firebase(config)
+    db = firebase.database()
+
+    list_of_user_ids = get_all_user_ids()
+    tags_dict = tcm.create_tags_dict(num_of_tags, list(list_of_user_ids))
+    print(tags_dict)
+
+    db.child(TAGS_DIR).set(tags_dict)
+
+
+def get_all_tags():
+    firebase = Firebase(config)
+    db = firebase.database()
+
+    tags_ordered_dict = db.child(TAGS_DIR).get().val()
+    tags_dict = dict(tags_ordered_dict)
+
+    list_of_tags = []
+    for value in tags_dict.values():
+        name = value["Name"]
+        try:
+            author = value["Author"]
+        except:
+            author = None
+        try:
+            creation_date = value["Creation_date"]
+        except:
+            creation_date = None
+        try:
+            users = value["Users"]
+        except:
+            users = None
+
+        list_of_tags.append(tcm.Tag(name, author, creation_date, users))
+
+    return list_of_tags
+
+
+def delete_all_tags():
+    firebase = Firebase(config)
+    db = firebase.database()
+    db.child(TAGS_DIR).shallow().remove()
+
+
+def delete_tag(name):
+    firebase = Firebase(config)
+    db = firebase.database()
+    db.child(TAGS_DIR + "/" + name).shallow().remove()
+
+
+def find_matching_users(user_id):
+    list_of_all_tags = get_all_tags()
+    # TODO add currently used tags to the user within the database - speeds up the search alg significantly
+
+
+# user centered functions
 def delete_all_users():
     firebase = Firebase(config)
     db = firebase.database()
@@ -54,9 +117,17 @@ def create_users(number_of_users):
 
     list_of_user_ids = []
 
-    for user in ucm.create_users(number_of_users):
-        db.child(USERS_DIR).child(user.user_id).set(user.create_firebase_entry())
+    users_list = ucm.create_users(number_of_users)
+
+    for user in users_list:
         list_of_user_ids.append(user.user_id)
+
+    users_dict = {}
+    for user in users_list:
+        users_dict[user.user_id] = user.create_firebase_entry()
+
+    db.child(USERS_DIR).set(users_dict)
+
     return list_of_user_ids
 
 
@@ -78,6 +149,13 @@ def update_user_data(given_user_id, data):
             firebase = Firebase(config)
             db = firebase.database()
             db.child(USERS_DIR).child(given_user_id).update(data)
+
+
+def get_all_user_ids():
+    firebase = Firebase(config)
+    db = firebase.database()
+    list_of_user_ids = db.child(USERS_DIR).shallow().get().val()
+    return list_of_user_ids
 
 
 def get_all_users():
@@ -108,3 +186,11 @@ def get_all_users():
 # print(check_if_exists(config, USERS_DIR, "01cd2f24549a4f6a8a2cc4ad553ca413"))
 
 # get_all_users()
+
+create_tags(20)
+
+# delete_all_tags()
+
+# tags = get_all_tags()
+#
+# print(tags)

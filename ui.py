@@ -108,8 +108,8 @@ class ManageWindow(Screen):
                     value = user_info_dict[key]
                     user_info += "[b]{0:22}[/b]{1}\n".format(str(key) + ':', str(value))
 
-                delete_user_btn = DeleteUserBtn(user_info_dict[dba.keys[0]])
-                update_user_data_btn = UpdateUserDataBtn(user_info_dict[dba.keys[0]])
+                delete_user_btn = DeleteUserBtn(user_info_dict[dba.user_keys[0]])
+                update_user_data_btn = UpdateUserDataBtn(user_info_dict[dba.user_keys[0]])
 
                 self.ids.content.add_widget(Label(text=user_info, size_hint=(.7, None), markup=True,
                                                   pos_hint={'right': 1, 'bottom': 0}, height=175))

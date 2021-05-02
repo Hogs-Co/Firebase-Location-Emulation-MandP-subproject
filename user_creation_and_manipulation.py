@@ -65,8 +65,21 @@ class User:
 def create_users(num_of_users):
     list_of_users = []
 
+    # TODO is uuid4 to str change really necessary?
+    # possible fix is this:
+    # |-------------------------------------------------------------------------|
+    # | import json                                                             |
+    # | from uuid import UUID                                                   |
+    # |                                                                         |
+    # | class UUIDEncoder(json.JSONEncoder):                                    |
+    # |     def default(self, obj):                                             |
+    # |         if isinstance(obj, UUID):                                       |
+    # |             # if the obj is uuid, we simply return the value of uuid    |
+    # |             return obj.hex                                              |
+    # |         return json.JSONEncoder.default(self, obj)                      |
+    # |-------------------------------------------------------------------------|
     for _ in range(0, num_of_users):
-        user = User(str(uuid.uuid4()).replace("-", ""), names.get_first_name(), names.get_last_name(),
+        user = User(str(uuid.uuid4()).replace("-", "-"), names.get_first_name(), names.get_last_name(),
                     date(2000 - randint(0, 10), randint(1, 12), randint(1, 28)))
         user.update_user((0, 0), f"{user.name.lower()}.{user.surname.lower()}@gmail.com")
         list_of_users.append(user)
