@@ -48,7 +48,7 @@ def create_tags(num_of_tags):
 
     list_of_user_ids = get_all_user_ids()
     tags_dict = tcm.create_tags_dict(num_of_tags, list(list_of_user_ids))
-    print(tags_dict)
+    # print(tags_dict)
 
     db.child(TAGS_DIR).set(tags_dict)
 
@@ -187,7 +187,7 @@ def get_all_users():
 
 # get_all_users()
 
-create_tags(20)
+# create_tags(20)
 
 # delete_all_tags()
 

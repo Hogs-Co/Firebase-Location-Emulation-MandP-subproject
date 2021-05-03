@@ -15,11 +15,14 @@ from kivy.properties import ObjectProperty
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.core.text import LabelBase
+from kivy_garden.mapview import MapView
 
-Window.size = (600, 600)
+Window.size = (1000, 1000)
 
 
 class HomeWindow(Screen):
+    def show_popup_map(self):
+        show_popup_mapview()
     pass
 
 
@@ -236,6 +239,7 @@ class PopDeleteAllTags(FloatLayout):
         self.ids.correct_data.text = 'Done'
     pass
 
+
 class PopAddUsersToTags(FloatLayout):
     def incorrect_password(self):
         self.ids.incorrect_passwd.text = "Incorrect password"
@@ -243,6 +247,12 @@ class PopAddUsersToTags(FloatLayout):
     def correct_password(self):
         self.ids.incorrect_passwd.text = ''
         self.ids.correct_passwd.text = 'Done'
+    pass
+
+
+class PopMapView(MapView):
+    def __init__(self, **kwargs):
+        super().__init__()
     pass
 
 
@@ -291,7 +301,10 @@ def show_popup_add_users_to_tags():
     popup_window.open()
 
 
-
+def show_popup_mapview():
+    show = PopMapView(min_zoom=5, max_zoom=12)
+    popup_window = Popup(title="Map", content=show, size_hint=(None, None), size=(900, 900))
+    popup_window.open()
 
 
 # App call function

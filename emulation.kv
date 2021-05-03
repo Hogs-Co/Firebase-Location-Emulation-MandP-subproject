@@ -1,6 +1,7 @@
 #:import NoTransition kivy.uix.screenmanager.NoTransition
 #:import ScreenManager kivy.uix.screenmanager
 #:import dba database_access
+#:import Mapview kivy.garden.mapview.MapView
 
 #There are three keywords specific to Kv language:
 #
@@ -62,11 +63,26 @@ WindowManager:
                     app.root.current = "manageWin"
                     app.root.get_screen(app.root.current).btn_create_user_labels()
 
+        GridLayout:
+            cols: 2
+
+            Button:
+                id: generate
+                text: "Generate"
+                on_release:
+                    app.root.current = "generateWin"
+
+            Button:
+                id: just_map
+                text: "Map"
+                on_release:
+                    root.show_popup_map()
         Button:
-            id: generate
-            text: "Generate"
+            id: start_sim
+            text: "Start sim"
             on_release:
-                app.root.current = "generateWin"
+                #ToDo add create_users and create_tags and location_assign and then start the sim
+                root.show_popup_map()
 
 <BrowseWindow>:
     name: "browseWin"
@@ -113,6 +129,21 @@ WindowManager:
             id: content
             cols: 1
             spacing: 5
+
+<MapView>:
+    name: "map"
+    lon: 19.4560
+    lat: 51.7592
+    zoom: 5
+#    min_zoom: 3
+#    max_zoom: 10
+    snap_to_zoom: False
+    pause_on_action: False
+
+
+
+
+
 
 <GenerateWindow>
     name: "generateWin"
@@ -195,7 +226,7 @@ WindowManager:
 
             Button:
                 id: addNewTagsBtn
-                text: "Add new tags"
+                text: "Add new tags with users"
                 on_release:
                     root.btn_add_new_tags()
 
@@ -206,11 +237,11 @@ WindowManager:
                 on_release:
                     root.btn_delete_all_tags()
 
-        Button:
-            id: addUsersToTagsBtn
-            text: "Add users to tags"
-            on_release:
-                root.btn_add_users_to_tags()
+#        Button:
+#            id: addUsersToTagsBtn
+#            text: "Add users to tags"
+#            on_release:
+#                root.btn_add_users_to_tags()
 
 <PopCreateAppend>:
     Label:
@@ -473,6 +504,8 @@ WindowManager:
         size_hint: .8, .2
         pos_hint: {"center_x": .5, "center_y": .2}
         on_release:
+            dba.delete_all_tags();\
+            dba.create_tags(int(amount_of_tags.text));\
             root.entry_done()
 
     Label:
@@ -504,7 +537,8 @@ WindowManager:
         size_hint: .8, .2
         pos_hint: {"center_x": .5, "center_y": .2}
         on_release:
-            if password.text == '123' and app.new_load:\
+            if password.text == '123':\
+            dba.delete_all_tags();\
             root.correct_data();
             else: root.incorrect_data()
 
