@@ -41,16 +41,30 @@ user_keys = ['User_ID', 'Name', 'Surname', 'Email', 'Birth_date', 'Age',
              'Current_localization', 'Current_used_tags', 'User_generated_tags']
 
 
+class DatabaseData:
+    def __init__(self):
+        self.users_list = get_all_users()
+        self.tags_list = get_all_tags()
+
+    def update_data(self):
+        self.users_list.clear()
+        self.tags_list.clear()
+
+        self.users_list = get_all_users()
+        self.tags_list = get_all_tags()
+
+
 # tag centered functions
 def create_tags(num_of_tags):
     firebase = Firebase(config)
     db = firebase.database()
 
     list_of_user_ids = get_all_user_ids()
-    tags_dict = tcm.create_tags_dict(num_of_tags, list(list_of_user_ids))
-    # print(tags_dict)
+    tags_dict, updated_users_dict = tcm.create_tags_dict(num_of_tags, list(list_of_user_ids))
 
     db.child(TAGS_DIR).set(tags_dict)
+    for key in updated_users_dict:
+        db.child(USERS_DIR).child(key).update(updated_users_dict[key])
 
 
 def get_all_tags():

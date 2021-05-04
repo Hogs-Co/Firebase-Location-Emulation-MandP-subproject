@@ -31,7 +31,7 @@ class Tag:
             "Creation_date": str(self.creation_date),
             "Users": self.users
         }
-        print(data)
+        # print(data)
         return data
 
     def __repr__(self):
@@ -51,23 +51,31 @@ def create_tags(num_of_tags: int, list_of_user_ids: list):
     for tag_name in custom_tag_names[0:num_of_tags]:
         list_of_tags.append(Tag(tag_name))
 
+    updated_users_dict = {}
+    for user_id in list_of_user_ids:
+        updated_users_dict[user_id] = {}
+
+    for val in updated_users_dict.values():
+        val["Current_used_tags"] = []
+
     for tag in list_of_tags:
         for user_id in list_of_user_ids:
             if randint(0, 100) < 40:
                 tag.insert_user(user_id)
+                updated_users_dict[user_id]["Current_used_tags"].append(tag.name.replace("#", ""))
 
-    return list_of_tags
+    return list_of_tags, updated_users_dict
 
 
 def create_tags_dict(num_of_tags: int, list_of_user_ids: list):
-    created_tags = create_tags(num_of_tags, list_of_user_ids)
+    created_tags, updated_users_dict = create_tags(num_of_tags, list_of_user_ids)
 
     firebase_dict = {}
 
     for tag in created_tags:
         firebase_dict[tag.name.replace("#", "")] = tag.create_firebase_entry()
 
-    return firebase_dict
+    return firebase_dict, updated_users_dict
 
 
 # user_ids = []
