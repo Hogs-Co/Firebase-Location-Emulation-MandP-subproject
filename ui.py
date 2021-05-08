@@ -251,7 +251,7 @@ class PopAddUsersToTags(FloatLayout):
 
 
 class PopMapView(MapView):
-    def __init__(self, **kwargs):
+    def __init__(self):
         super().__init__()
     pass
 
@@ -302,7 +302,7 @@ def show_popup_add_users_to_tags():
 
 
 def show_popup_mapview():
-    show = PopMapView(min_zoom=5, max_zoom=12)
+    show = PopMapView()
     popup_window = Popup(title="Map", content=show, size_hint=(None, None), size=(900, 900))
     popup_window.open()
 
