@@ -1,6 +1,6 @@
 from firebase import Firebase
-import user_creation_and_manipulation as ucm
-import tag_creation_and_manipulation as tcm
+import user_creation_and_manip as ucm
+import tag_creation_and_manip as tcm
 from names import get_first_name
 from collections import OrderedDict
 import time
@@ -95,6 +95,22 @@ def get_all_tags():
     return list_of_tags
 
 
+def get_all_tag_names():
+    firebase = Firebase(config)
+    db = firebase.database()
+
+    tags_ordered_dict = db.child(TAGS_DIR).get().val()
+    tags_dict = dict(tags_ordered_dict)
+
+    list_of_tags = []
+
+    for value in tags_dict.values():
+        name = value["Name"]
+        list_of_tags.append(name)
+    return list_of_tags
+
+
+# noinspection DuplicatedCode
 def delete_all_tags():
     firebase = Firebase(config)
     db = firebase.database()
@@ -109,7 +125,7 @@ def delete_tag(name):
 
 def find_matching_users(user_id):
     list_of_all_tags = get_all_tags()
-    # TODO add currently used tags to the user within the database - speeds up the search alg significantly
+    # TODO add localization for users to show cross-matches on the map :3
 
 
 # user centered functions
@@ -187,6 +203,9 @@ def get_all_users():
             users_list.append(value)
 
     return users_list
+
+
+# print(tcm.mark_random_tags(get_all_tag_names()))
 
 
 # delete_all_users()

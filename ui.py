@@ -1,6 +1,8 @@
+import os
 import kivy
 import database_access as dba
-import user_creation_and_manipulation as ucm
+import user_creation_and_manip as ucm
+import coords_creation_and_manip as ccm
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
@@ -15,9 +17,12 @@ from kivy.properties import ObjectProperty
 from kivy.uix.stacklayout import StackLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.core.text import LabelBase
-from kivy_garden.mapview import MapView
+from kivy_garden.mapview import MapView, MapMarker
 
-Window.size = (1000, 1000)
+WIDTH = 1000
+HEIGHT = 1000
+
+Window.size = (WIDTH, HEIGHT)
 
 
 class HomeWindow(Screen):
@@ -78,8 +83,8 @@ class BrowseWindow(Screen):
                     value = user_info_dict[key]
                     user_info += "[b]{0:22}[/b]{1}\n".format(str(key) + ':', str(value))
                 self.ids.content.add_widget(Label(text=user_info, size_hint=(1, None), markup=True,
-                                                  text_size=(None, None), height=160))
-                self.ids.content.size_hint = (1, (179.5 * len(users_list)) / 600)
+                                                  text_size=(None, None), height=int(0.25 * HEIGHT)))
+                self.ids.content.size_hint = (1, (300 * len(users_list)) / HEIGHT)
                 counter += 1
         else:
             self.ids.content.add_widget(Label(text="No users to display", size_hint_y=None, markup=True,
@@ -115,15 +120,15 @@ class ManageWindow(Screen):
                 update_user_data_btn = UpdateUserDataBtn(user_info_dict[dba.user_keys[0]])
 
                 self.ids.content.add_widget(Label(text=user_info, size_hint=(.7, None), markup=True,
-                                                  pos_hint={'right': 1, 'bottom': 0}, height=175))
+                                                  pos_hint={'right': 1, 'bottom': 0}, height=int(0.25 * HEIGHT)))
                 self.ids.content.add_widget(delete_user_btn)
                 self.ids.content.add_widget(update_user_data_btn)
                 self.ids.content.size_hint = (1, None)
-                self.ids.content.height = (175+10)*len(users_list)
+                self.ids.content.height = (int(0.25 * HEIGHT)+10)*len(users_list)
                 counter += 1
         else:
             self.ids.content.add_widget(Label(text="No users to display",  size_hint=(.7, None), markup=True,
-                                              pos_hint={'right': 1, 'bottom': 0}, height=175))
+                                              pos_hint={'right': 1, 'bottom': 0}, height=int(0.25 * HEIGHT)))
 
     pass
 
@@ -253,10 +258,18 @@ class PopAddUsersToTags(FloatLayout):
 class PopMapView(MapView):
     def __init__(self):
         super().__init__()
+        for coord in ccm.give_start_points():
+            marker = MapMarker(lon=coord[0], lat=coord[1], source=os.path.join("coords", "start_point.png"))
+            super().add_marker(marker)
+
+        for coord in ccm.give_end_points():
+            marker = MapMarker(lon=coord[0], lat=coord[1], source=os.path.join("coords", "end_point.png"))
+            super().add_marker(marker)
+
     pass
 
 
-# Popup call functions
+# Popup call functions: Users
 def show_popup_append():
     show = PopCreateAppend()
     popup_window = Popup(title="Append users list", content=show, size_hint=(None, None), size=(400, 400))
