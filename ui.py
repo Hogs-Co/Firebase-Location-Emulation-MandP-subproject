@@ -1,5 +1,12 @@
 import os
+import sys
+
 import kivy
+import json
+import collections
+
+import numpy as np
+import pandas as pd
 import database_access as dba
 import user_creation_and_manip as ucm
 import coords_creation_and_manip as ccm
@@ -18,16 +25,22 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.core.text import LabelBase
 from kivy_garden.mapview import MapView, MapMarker
+from win32api import GetSystemMetrics
 
 WIDTH = 1000
 HEIGHT = 1000
 
 Window.size = (WIDTH, HEIGHT)
+Window.top = 1080 + 30 - GetSystemMetrics(1)
+Window.left = GetSystemMetrics(0)//2 - 500
 
 
 class HomeWindow(Screen):
     def show_popup_map(self):
         show_popup_mapview()
+
+    def show_popup_sim_map(self):
+        show_popup_sim_mapview()
     pass
 
 
@@ -258,13 +271,59 @@ class PopAddUsersToTags(FloatLayout):
 class PopMapView(MapView):
     def __init__(self):
         super().__init__()
+        counter = 0
         for coord in ccm.give_start_points():
-            marker = MapMarker(lon=coord[0], lat=coord[1], source=os.path.join("coords", "start_point.png"))
+            marker = MapMarker(lon=coord[0], lat=coord[1],
+                               source=os.path.join("coords", "start_point.png"))
             super().add_marker(marker)
+            counter += 1
 
+        counter = 0
         for coord in ccm.give_end_points():
-            marker = MapMarker(lon=coord[0], lat=coord[1], source=os.path.join("coords", "end_point.png"))
+            marker = MapMarker(lon=coord[0], lat=coord[1],
+                               source=os.path.join("coords", "end_point.png"))
             super().add_marker(marker)
+            counter += 1
+    pass
+
+
+class PopSimMapView(MapView):
+    # In MapView:
+    # Lon, Lat
+    # In Google API's
+    # Lat, Lon
+    def __init__(self):
+        super().__init__()
+        start_points = ccm.give_start_points()
+        end_points = ccm.give_end_points()
+
+        self.users_json_str = json.dumps(dba.get_all_users('json'))
+        self.users_data_firebase = pd.read_json(self.users_json_str).transpose()
+        self.users_data = {}
+        start_end = np.empty(0)
+        for sp in start_points:
+            for ep in end_points:
+                start_end = np.append(start_end, [sp[1], sp[0], ep[1], ep[0]])
+        np.set_printoptions(threshold=sys.maxsize)
+        start_end = np.reshape(start_end, (-1, 4))
+
+        for index, row in self.users_data_firebase.iterrows():
+            self.users_data[index] = None
+
+        for path, key in zip(start_end, self.users_data.keys()):
+            value = [tuple(path[0:2]), tuple(path[2:4])]
+            self.users_data[key] = value
+        # we end up with unmodified users_data_firebase and start_end_points within users_data
+
+        # for index, row in self.users_data_firebase.iterrows():
+        #     row['Current_localization'] = [1, 2]
+        # print(self.users_data_firebase)
+        # self.users_json_str = self.users_data_firebase.transpose().to_json()
+        # dba.update_all_users(json.loads(self.users_json_str))
+
+    def create_paths(self):
+        # need to resolve methodology in testing_google_maps.py first
+        pass
 
     pass
 
@@ -317,6 +376,12 @@ def show_popup_add_users_to_tags():
 def show_popup_mapview():
     show = PopMapView()
     popup_window = Popup(title="Map", content=show, size_hint=(None, None), size=(900, 900))
+    popup_window.open()
+
+
+def show_popup_sim_mapview():
+    show = PopSimMapView()
+    popup_window = Popup(title="Simulation", content=show, size_hint=(None, None), size=(900, 900))
     popup_window.open()
 
 

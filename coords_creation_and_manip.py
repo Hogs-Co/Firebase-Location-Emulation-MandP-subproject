@@ -24,7 +24,6 @@ def format_kml(given_doc):
 		else:
 			# Reference point Placemark
 			coord = pm.cssselect('Point coordinates')[0].text_content()
-			coords = []
 			coords = coord.replace(' ', '').replace('\n', '').split(',')
 			coords.remove('0')
 			for index in range(len(coords)):

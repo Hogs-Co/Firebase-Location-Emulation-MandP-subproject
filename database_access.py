@@ -188,25 +188,30 @@ def get_all_user_ids():
     return list_of_user_ids
 
 
-def get_all_users():
+def get_all_users(return_type="list"):
     firebase = Firebase(config)
     db = firebase.database()
 
-    users_ordered_dict = db.child(USERS_DIR).get().val()
+    if return_type == "list":
+        users_ordered_dict = db.child(USERS_DIR).get().val()
+        users_list = []
+        if users_ordered_dict is not None:
+            users_dict = dict(users_ordered_dict)
+            for value in users_dict.values():
+                users_list.append(value)
+        return users_list
+    elif return_type == "json":
+        return db.child(USERS_DIR).get().val()
 
-    users_list = []
 
-    if users_ordered_dict is not None:
-        users_dict = dict(users_ordered_dict)
-
-        for value in users_dict.values():
-            users_list.append(value)
-
-    return users_list
+def update_all_users(given_json):
+    """Takes only json"""
+    firebase = Firebase(config)
+    db = firebase.database()
+    db.child(USERS_DIR).update(given_json)
 
 
 # print(tcm.mark_random_tags(get_all_tag_names()))
-
 
 # delete_all_users()
 
