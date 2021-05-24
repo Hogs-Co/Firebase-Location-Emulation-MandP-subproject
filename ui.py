@@ -31,7 +31,7 @@ WIDTH = 1000
 HEIGHT = 1000
 
 Window.size = (WIDTH, HEIGHT)
-Window.top = 1080 + 30 - GetSystemMetrics(1)
+Window.top = GetSystemMetrics(1) - 1100
 Window.left = GetSystemMetrics(0)//2 - 500
 
 

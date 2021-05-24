@@ -45,15 +45,15 @@ class User:
 
     def create_firebase_entry(self):
         data = {
-            'User_ID': self.user_id,
-            'Name': self.name,
-            'Surname': self.surname,
-            'Email': self.email,
-            'Birth date': str(self.birth_date),
-            'Age': self.age,
-            'Current_localization': self.localization,
-            'Current_used_tags': self.tags,
-            'User_generated_tags': self.user_generated_tags
+            'userId': self.user_id,
+            'name': self.name,
+            'surname': self.surname,
+            'email': self.email,
+            'birthdate': str(self.birth_date),
+            'age': self.age,
+            'currentLocalization': self.localization,
+            'currentUsedTags': self.tags,
+            'userGeneratedTags': self.user_generated_tags
         }
         return data
 
