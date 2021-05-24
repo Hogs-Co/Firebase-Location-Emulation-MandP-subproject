@@ -25,27 +25,28 @@ TAGS_DIR = "tags"
 # firebase table identifier: fir-test-env-mandp-default-rtdb
 # firebase link: https://fir-test-env-mandp-default-rtdb.firebaseio.com/
 
-config = {
-    "apiKey": "AAAA3KmrBPQ:APA91bFqfELPwbuc7gAS1FkgCland5wKUAEZpEaYUmLdjdjr-rUVF1zBp_5JKHY_TxbsT6ROtiRy28gCd2pEPmHk"
-              "awl2b-ow1H2rkOCknJ6b3npX09_flYlFZnQI1O5R0F-EC_PoJw1D",
-    "authDomain": "fir-test-env-mandp.firebaseapp.com",
-    "databaseURL": "https://fir-test-env-mandp-default-rtdb.firebaseio.com",
-    "storageBucket": "fir-test-env-mandp.appspot.com",
-    "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
-}
-
 # config = {
-#     "apiKey": "AIzaSyBuqichuoC8ytlbDHzlw7dsiaRa10FxB4E",
-#     "authDomain": "party-and-meat.firebaseapp.com",
-#     "databaseURL": "https://party-and-meat-default-rtdb.firebaseio.com",
-#     "storageBucket": "party-and-meat.appspot.com",
-#     "serviceAccount": "party-and-meat-firebase-adminsdk-r1dse-9055245288.json"
+#     "apiKey": "AAAA3KmrBPQ:APA91bFqfELPwbuc7gAS1FkgCland5wKUAEZpEaYUmLdjdjr-rUVF1zBp_5JKHY_TxbsT6ROtiRy28gCd2pEPmHk"
+#               "awl2b-ow1H2rkOCknJ6b3npX09_flYlFZnQI1O5R0F-EC_PoJw1D",
+#     "authDomain": "fir-test-env-mandp.firebaseapp.com",
+#     "databaseURL": "https://fir-test-env-mandp-default-rtdb.firebaseio.com",
+#     "storageBucket": "fir-test-env-mandp.appspot.com",
+#     "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
 # }
 
-# tag_keys = ['Name', 'Creation_date', 'Author', 'Users']
+config = {
+    "apiKey": "AIzaSyBuqichuoC8ytlbDHzlw7dsiaRa10FxB4E",
+    "authDomain": "party-and-meat.firebaseapp.com",
+    "databaseURL": "https://party-and-meat-default-rtdb.firebaseio.com",
+    "storageBucket": "party-and-meat.appspot.com",
+    "serviceAccount": "party-and-meat-firebase-adminsdk-r1dse-9055245288.json"
+}
 
-# user_keys = ['User_ID', 'Name', 'Surname', 'Email', 'Birth_date', 'Age',
-#              'Current_localization', 'Current_used_tags', 'User_generated_tags']
+tag_keys = ['Name', 'CreationDate', 'Author', 'Users']
+
+user_keys = ['Id', 'Name', 'Surname', 'Email', 'BirthDate', 'Age',
+             'CurrentLocation', 'CurrentUsedTags', 'UserGeneratedTags',
+             'Info', 'ImageLink']
 
 
 class DatabaseData:
