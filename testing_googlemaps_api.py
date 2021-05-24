@@ -1,6 +1,7 @@
 import googlemaps
 import pandas as pd
 import json
+import numpy as np
 
 gmaps = googlemaps.Client(key='AIzaSyCHMbZoZ4oY26FIVFU2xllmaWr70YRt004')
 
@@ -46,14 +47,39 @@ print(f"{distance}\n{directions}\n{distances}")
 
 
 def get_complete_path(speed, interval, directions, distances):
-    distance_metric = speed * interval
+    distance_metric_interval = speed * interval
     for index in range(len(distances)):
+        distance_metric = distance_metric_interval
         distance = distances[index]
-        while (distance - distance_metric) > 0:
-            distance -= distance_metric
+        centering_vector = (-directions[index][0], -directions[index][1])
+        # x_a, y_a = directions[index]
+        x_b, y_b = directions[index + 1]
+        # a = (y_a - y_b) / (x_a - x_b)
+        # b = -a * x_b + y_b
+        while distance_metric < distance:
+            x_a = 1
+            y_a = 0
+            x_b = x_b + centering_vector[0]
+            y_b = y_b + centering_vector[1]
+            rads = np.arccos((x_a * x_b + y_a * y_b) / ((x_a ** 2 + y_a ** 2) ** (1 / 2) *
+                                                        (x_b ** 2 + y_b ** 2) ** (1 / 2)))
+            if y_b < 0:
+                rads = 2 * np.pi - rads
+
+            x_c = np.sin(rads) * (distance_metric * (1 / 110540)) - centering_vector[0]
+            y_c = np.cos(rads) * (distance_metric * (1 / 111320 * np.cos(x_c))) - centering_vector[1]
+
+            # Latitude: 1 deg = 110540 m
+            # Longitude: 1 deg = 111320 * cos(latitude) m
+
+            print(f"{index} start: {str(directions[index]).rjust(40 + len(str(index)) + 8, ' ')}")
+            print(f"{index} end: {str(directions[index + 1]).rjust(40 + len(str(index)) + 10, ' ')}")
+            print(f"{index} inter: {str((x_c, y_c)).rjust(40 + len(str(index)) + 8, ' ')}")
+
+            distance_metric += distance_metric
 
 
-get_complete_path(2, 10, directions, distances)
+get_complete_path(2, 12, directions, distances)
 
 # For Śmietan:
 # https://www.wolframalpha.com/input/?i=sqrt%28%28x+-+2%29%5E2+%2B+%28y+-+1%29%5E2%29+%3D+20

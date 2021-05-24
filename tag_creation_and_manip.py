@@ -29,7 +29,7 @@ class Tag:
         data = {
             "Name": self.name.replace("#", ""),
             "Author": self.author,
-            "Creation_date": str(self.creation_date),
+            "CreationDate": str(self.creation_date),
             "Users": self.users
         }
         # print(data)
@@ -73,14 +73,14 @@ def create_tags(num_of_tags: int, list_of_user_ids: list):
         updated_users_dict[user_id] = {}
 
     for val in updated_users_dict.values():
-        val["Current_used_tags"] = []
+        val["CurrentUsedTags"] = []
 
     for user_id in list_of_user_ids:
         rand_tags = mark_random_tags(custom_tag_names[0:num_of_tags])
         for tag in list_of_tags:
             if tag.name.replace("#", "") in rand_tags:
                 tag.insert_user(user_id)
-                updated_users_dict[user_id]["Current_used_tags"].append(tag.name.replace("#", ""))
+                updated_users_dict[user_id]["CurrentUsedTags"].append(tag.name.replace("#", ""))
 
     return list_of_tags, updated_users_dict
 

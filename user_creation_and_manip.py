@@ -13,13 +13,16 @@ class User:
         self.birth_date = birth_date
         self.age = None
         self.email = None
+        self.imageLink = "https://i.imgur.com/FtGIXlN.png"
         self.email_correct = False
-        self.localization = (None, None)
+        self.location = [51.735172, 19.492445]
+        # self.phone = ""
+        self.info = "Created using EmulationApp"
         self.tags = []
         self.user_generated_tags = []
 
-    def set_localization(self, localization):
-        self.localization = localization
+    def set_location(self, location):
+        self.location = location
 
     def calculate_age(self):
         today = date.today()
@@ -39,21 +42,23 @@ class User:
             self.email_correct = True
 
     def update_user(self, given_localization, given_email):
-        self.set_localization(given_localization)
+        self.set_location(given_localization)
         self.calculate_age()
         self.check_email(given_email)
 
     def create_firebase_entry(self):
         data = {
-            'userId': self.user_id,
-            'name': self.name,
-            'surname': self.surname,
-            'email': self.email,
-            'birthdate': str(self.birth_date),
-            'age': self.age,
-            'currentLocalization': self.localization,
-            'currentUsedTags': self.tags,
-            'userGeneratedTags': self.user_generated_tags
+            'Id': self.user_id,
+            'Name': self.name,
+            'Surname': self.surname,
+            'Email': self.email,
+            'Birthdate': str(self.birth_date),
+            'ImageLink': str(self.imageLink),
+            'Age': self.age,
+            'CurrentLocation': self.location,
+            'CurrentUsedTags': self.tags,
+            'UserGeneratedTags': self.user_generated_tags,
+            'Info': self.info
         }
         return data
 
