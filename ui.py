@@ -240,10 +240,10 @@ class PopUpdateUserData(FloatLayout):
         data_dict = {}
         for key, val in self.ids.items():
             if key not in ["password", "incorrect_data", "correct_data"] and val.text != "":
-                if key == "Current_localization":
+                if key == dba.user_keys[6]:
                     new_coords = str(val.text).split(sep=";")
-                    data_dict[str(key)] = (int(new_coords[0]), int(new_coords[1]))
-                elif key == "Email" and not ucm.check_email(str(val.text)):
+                    data_dict[str(key)] = (float(new_coords[0]), float(new_coords[1]))
+                elif key == dba.user_keys[3] and not ucm.check_email(str(val.text)):
                     self.incorrect_data()
                     return None
                 else:

@@ -2,11 +2,13 @@ import uuid
 import re
 import names
 from datetime import date
-from random import randint
+from random import randint, uniform
 
 
 class User:
     def __init__(self, user_id, name, surname, birth_date):  # birth_date in format datetime.date(yyyy-mm-dd)
+        lat = uniform(50.0, 52.0)
+        lon = uniform(18.0, 20.0)
         self.user_id = user_id
         self.name = str(name).capitalize()
         self.surname = str(surname).capitalize()
@@ -15,7 +17,7 @@ class User:
         self.email = None
         self.imageLink = "https://i.imgur.com/FtGIXlN.png"
         self.email_correct = False
-        self.location = [51.735172, 19.492445]
+        self.location = [lat, lon]
         # self.phone = ""
         self.info = "Created using EmulationApp"
         self.tags = []
@@ -52,7 +54,7 @@ class User:
             'Name': self.name,
             'Surname': self.surname,
             'Email': self.email,
-            'Birthdate': str(self.birth_date),
+            'BirthDate': str(self.birth_date),
             'ImageLink': str(self.imageLink),
             'Age': self.age,
             'CurrentLocation': self.location,
@@ -86,7 +88,7 @@ def create_users(num_of_users):
     for _ in range(0, num_of_users):
         user = User(str(uuid.uuid4()).replace("-", "-"), names.get_first_name(), names.get_last_name(),
                     date(2000 - randint(0, 10), randint(1, 12), randint(1, 28)))
-        user.update_user((0, 0), f"{user.name.lower()}.{user.surname.lower()}@gmail.com")
+        user.update_user(user.location, f"{user.name.lower()}.{user.surname.lower()}@gmail.com")
         list_of_users.append(user)
     return list_of_users
 
