@@ -165,7 +165,7 @@ def create_users(number_of_users):
     for user in users_list:
         users_dict[user.user_id] = user.create_firebase_entry()
 
-    db.child(USERS_DIR).set(users_dict)
+    db.child(USERS_DIR).update(users_dict)
 
     return list_of_user_ids
 
