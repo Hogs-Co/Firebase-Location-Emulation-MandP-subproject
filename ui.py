@@ -1,15 +1,21 @@
 import os
 import sys
+import asyncio
+import concurrent.futures
+import numpy as np
+import pandas as pd
+from io import StringIO
+from time import sleep
+from win32api import GetSystemMetrics
 
 import kivy
 import json
 import collections
 
-import numpy as np
-import pandas as pd
 import database_access as dba
 import user_creation_and_manip as ucm
 import coords_creation_and_manip as ccm
+
 from kivy.app import App
 from kivy.uix.label import Label
 from kivy.uix.gridlayout import GridLayout
@@ -25,14 +31,16 @@ from kivy.uix.stacklayout import StackLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.core.text import LabelBase
 from kivy_garden.mapview import MapView, MapMarker
-from win32api import GetSystemMetrics
+
 
 WIDTH = 1000
 HEIGHT = 1000
 
 Window.size = (WIDTH, HEIGHT)
-Window.top = GetSystemMetrics(1) - 1100
-Window.left = GetSystemMetrics(0)//2 - 500
+Window.top = 40 + max(GetSystemMetrics(1) // 2 - 540, 0)
+Window.left = GetSystemMetrics(0) // 2 - 500
+
+executor = concurrent.futures.ThreadPoolExecutor(max_workers=20)
 
 
 class HomeWindow(Screen):
@@ -41,6 +49,7 @@ class HomeWindow(Screen):
 
     def show_popup_sim_map(self):
         show_popup_sim_mapview()
+
     pass
 
 
@@ -137,10 +146,10 @@ class ManageWindow(Screen):
                 self.ids.content.add_widget(delete_user_btn)
                 self.ids.content.add_widget(update_user_data_btn)
                 self.ids.content.size_hint = (1, None)
-                self.ids.content.height = (int(0.25 * HEIGHT)+10)*len(users_list)
+                self.ids.content.height = (int(0.25 * HEIGHT) + 10) * len(users_list)
                 counter += 1
         else:
-            self.ids.content.add_widget(Label(text="No users to display",  size_hint=(.7, None), markup=True,
+            self.ids.content.add_widget(Label(text="No users to display", size_hint=(.7, None), markup=True,
                                               pos_hint={'right': 1, 'bottom': 0}, height=int(0.25 * HEIGHT)))
 
     pass
@@ -169,6 +178,7 @@ class GenerateTagsWindow(Screen):
 
     def btn_add_users_to_tags(self):
         show_popup_add_users_to_tags()
+
     pass
 
 
@@ -239,12 +249,14 @@ class PopUpdateUserData(FloatLayout):
                 else:
                     data_dict[str(key)] = str(val.text)
         return data_dict
+
     pass
 
 
 class PopAddNewTags(FloatLayout):
     def entry_done(self):
         self.ids.entry_done.text = 'Done'
+
     pass
 
 
@@ -255,6 +267,7 @@ class PopDeleteAllTags(FloatLayout):
     def correct_data(self):
         self.ids.incorrect_data.text = ''
         self.ids.correct_data.text = 'Done'
+
     pass
 
 
@@ -265,6 +278,7 @@ class PopAddUsersToTags(FloatLayout):
     def correct_password(self):
         self.ids.incorrect_passwd.text = ''
         self.ids.correct_passwd.text = 'Done'
+
     pass
 
 
@@ -284,6 +298,7 @@ class PopMapView(MapView):
                                source=os.path.join("coords", "end_point.png"))
             super().add_marker(marker)
             counter += 1
+
     pass
 
 
@@ -294,35 +309,41 @@ class PopSimMapView(MapView):
     # Lat, Lon
     def __init__(self):
         super().__init__()
-        start_points = ccm.give_start_points()
-        end_points = ccm.give_end_points()
 
         self.users_json_str = json.dumps(dba.get_all_users('json'))
-        self.users_data_firebase = pd.read_json(self.users_json_str).transpose()
-        self.users_data = {}
-        start_end = np.empty(0)
-        for sp in start_points:
-            for ep in end_points:
-                start_end = np.append(start_end, [sp[1], sp[0], ep[1], ep[0]])
-        np.set_printoptions(threshold=sys.maxsize)
-        start_end = np.reshape(start_end, (-1, 4))
+        self.users_data_firebase = pd.read_json(StringIO(self.users_json_str)).transpose()
+        self.user_paths = {}
+        self.counter = 0
+        self.max_counter = 0
 
         for index, row in self.users_data_firebase.iterrows():
-            self.users_data[index] = None
+            random_path = ccm.get_random_path()
+            self.max_counter = max(self.max_counter, len(random_path) - 1)
+            self.user_paths[index] = random_path
 
-        for path, key in zip(start_end, self.users_data.keys()):
-            value = [tuple(path[0:2]), tuple(path[2:4])]
-            self.users_data[key] = value
-        # we end up with unmodified users_data_firebase and start_end_points within users_data
+        # counter = 0
+        # for key in self.user_paths.keys():
+        #     print(f"{counter}\n{key}: {self.user_paths[key]}", end="\n\n")
+        #     counter += 1
 
-        # for index, row in self.users_data_firebase.iterrows():
-        #     row['Current_localization'] = [1, 2]
-        # print(self.users_data_firebase)
-        # self.users_json_str = self.users_data_firebase.transpose().to_json()
-        # dba.update_all_users(json.loads(self.users_json_str))
+        self.do_stuff()
 
-    def create_paths(self):
-        # need to resolve methodology in testing_google_maps.py first
+    def do_stuff(self):
+        event_loop = asyncio.new_event_loop()
+        try:
+            event_loop.run_until_complete(self.create_paths())
+        finally:
+            event_loop.close()
+
+    async def create_paths(self):
+        while self.counter != 1:
+            for index, row in self.users_data_firebase.iterrows():
+                row['CurrentLocation'] = self.user_paths[row['Id']][min(self.counter,
+                                                                        len(self.user_paths[row['Id']]) - 1)]
+                self.users_json_str = self.users_data_firebase.transpose().to_json()
+                dba.update_all_users(json.loads(self.users_json_str))
+                print(self.users_json_str)
+            self.counter += 1
         pass
 
     pass

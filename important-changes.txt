@@ -1,3 +1,7 @@
 Changed def on_transform (at Python39/Lib/site-packages/kivy_garden/mapview.view.py):
                          => if scale >= 2.0: and elif scale < 1.0
                          => if (scale - 2.0) > 0.01: and elif (scale - 1.0) < -0.01:
+
+ASYNCHRONOUS CODE:
+https://gist.github.com/hiranya911/a0333aaef2d5165448bd73aa9c158ccd#file-good_asyncio-py
+https://hiranya911.medium.com/firebase-python-admin-sdk-with-asyncio-d65f39463916

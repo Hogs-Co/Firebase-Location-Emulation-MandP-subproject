@@ -1,7 +1,12 @@
 import googlemaps
 import pandas as pd
 import json
+import geopy
+import geopy.distance
+import math
 import numpy as np
+import webbrowser
+import time
 
 gmaps = googlemaps.Client(key='AIzaSyCHMbZoZ4oY26FIVFU2xllmaWr70YRt004')
 
@@ -47,39 +52,44 @@ print(f"{distance}\n{directions}\n{distances}")
 
 
 def get_complete_path(speed, interval, directions, distances):
-    distance_metric_interval = speed * interval
-    for index in range(len(distances)):
-        distance_metric = distance_metric_interval
-        distance = distances[index]
-        centering_vector = (-directions[index][0], -directions[index][1])
-        # x_a, y_a = directions[index]
-        x_b, y_b = directions[index + 1]
-        # a = (y_a - y_b) / (x_a - x_b)
-        # b = -a * x_b + y_b
-        while distance_metric < distance:
-            x_a = 1
-            y_a = 0
-            x_b = x_b + centering_vector[0]
-            y_b = y_b + centering_vector[1]
-            rads = np.arccos((x_a * x_b + y_a * y_b) / ((x_a ** 2 + y_a ** 2) ** (1 / 2) *
-                                                        (x_b ** 2 + y_b ** 2) ** (1 / 2)))
-            if y_b < 0:
-                rads = 2 * np.pi - rads
+    distance_interval = speed * interval
+    return_path = []
+    for index in range(len(directions) - 1):
+        lat1 = directions[index][0]
+        lng1 = directions[index][1]
+        lat2 = directions[index + 1][0]
+        lng2 = directions[index + 1][1]
+        rads = np.arccos((lat1 * lat2 + lng1 * lng2) / ((lat1 ** 2 + lng1 ** 2) ** (1 / 2) *
+                                                        (lat2 ** 2 + lng2 ** 2) ** (1 / 2)))
+        angle = rads * (180/math.pi)
+        distance_temp = distances[index]
+        return_path.append((lat1, lng1))
+        while distance_temp > distance_interval:
+            distance_temp -= distance_interval
 
-            x_c = np.sin(rads) * (distance_metric * (1 / 110540)) - centering_vector[0]
-            y_c = np.cos(rads) * (distance_metric * (1 / 111320 * np.cos(x_c))) - centering_vector[1]
+            origin = geopy.Point(lat1, lng1)
+            destination = geopy.distance.GeodesicDistance(meters=distance_interval).destination(origin, angle)
 
-            # Latitude: 1 deg = 110540 m
-            # Longitude: 1 deg = 111320 * cos(latitude) m
+            lat3 = destination.latitude
+            lng3 = destination.longitude
 
-            print(f"{index} start: {str(directions[index]).rjust(40 + len(str(index)) + 8, ' ')}")
-            print(f"{index} end: {str(directions[index + 1]).rjust(40 + len(str(index)) + 10, ' ')}")
-            print(f"{index} inter: {str((x_c, y_c)).rjust(40 + len(str(index)) + 8, ' ')}")
+            lat1 = lat3
+            lng1 = lng3
 
-            distance_metric += distance_metric
+            return_path.append((lat3, lng3))
+    return return_path
 
 
-get_complete_path(2, 12, directions, distances)
+            # query = "https://www.google.com/maps/search/?api=1&query={},{}".format(lat1, lng1)
+            # webbrowser.open(query, new=0, autoraise=False)
+            # time.sleep(2)
+
+        #     print(f"{index} start: {str(directions[index]).rjust(40 + len(str(index)) + 8, ' ')}")
+        #     print(f"{index} inter: {str((lat3, lng3)).rjust(40 + len(str(index)) + 8, ' ')}")
+        # print(f"{index} end: {str(directions[index + 1]).rjust(40 + len(str(index)) + 10, ' ')}")
+
+for x in get_complete_path(2, 12, directions, distances):
+    print(x)
 
 # For Śmietan:
 # https://www.wolframalpha.com/input/?i=sqrt%28%28x+-+2%29%5E2+%2B+%28y+-+1%29%5E2%29+%3D+20
