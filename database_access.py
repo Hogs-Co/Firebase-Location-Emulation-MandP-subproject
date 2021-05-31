@@ -46,8 +46,8 @@ config = {
 
 # tag_keys = ['Name', 'Creation_date', 'Author', 'Users']
 
-# user_keys = ['User_ID', 'Name', 'Surname', 'Email', 'Birth_date', 'Age',
-#              'Current_localization', 'Current_used_tags', 'User_generated_tags']
+user_keys = ['Id', 'Name', 'Surname', 'Email', 'BirthDate', 'Age',
+             'CurrentLocation', 'CurrentUsedTags', 'UserGeneratedTags']
 
 
 class DatabaseData:
@@ -188,6 +188,14 @@ def update_user_data(given_user_id, data):
             firebase = Firebase(config)
             db = firebase.database()
             db.child(USERS_DIR).child(given_user_id).update(data)
+
+
+def update_user_coords(given_user_id, data):
+    if data is not None:
+        if check_if_exists(given_user_id):
+            firebase = Firebase(config)
+            db = firebase.database()
+            db.child(USERS_DIR).child(given_user_id).child('CurrentLocation').update({0: data[0], 1: data[1]})
 
 
 def get_all_user_ids():

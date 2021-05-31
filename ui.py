@@ -1,16 +1,14 @@
 import os
-import sys
 import asyncio
 import concurrent.futures
-import numpy as np
+
 import pandas as pd
 from io import StringIO
 from time import sleep
 from win32api import GetSystemMetrics
+from threading import Thread
 
-import kivy
 import json
-import collections
 
 import database_access as dba
 import user_creation_and_manip as ucm
@@ -18,18 +16,13 @@ import coords_creation_and_manip as ccm
 
 from kivy.app import App
 from kivy.uix.label import Label
-from kivy.uix.gridlayout import GridLayout
-from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.lang import Builder
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
 from kivy.uix.floatlayout import FloatLayout
-from kivy.properties import ObjectProperty
-from kivy.uix.stacklayout import StackLayout
 from kivy.uix.scrollview import ScrollView
-from kivy.core.text import LabelBase
 from kivy_garden.mapview import MapView, MapMarker
 
 
@@ -39,8 +32,6 @@ HEIGHT = 1000
 Window.size = (WIDTH, HEIGHT)
 Window.top = 40 + max(GetSystemMetrics(1) // 2 - 540, 0)
 Window.left = GetSystemMetrics(0) // 2 - 500
-
-executor = concurrent.futures.ThreadPoolExecutor(max_workers=20)
 
 
 class HomeWindow(Screen):
@@ -287,19 +278,37 @@ class PopMapView(MapView):
         super().__init__()
         counter = 0
         for coord in ccm.give_start_points():
-            marker = MapMarker(lon=coord[0], lat=coord[1],
+            marker = MapMarker(lon=coord[1], lat=coord[0],
                                source=os.path.join("coords", "start_point.png"))
             super().add_marker(marker)
             counter += 1
 
         counter = 0
         for coord in ccm.give_end_points():
-            marker = MapMarker(lon=coord[0], lat=coord[1],
+            marker = MapMarker(lon=coord[1], lat=coord[0],
                                source=os.path.join("coords", "end_point.png"))
             super().add_marker(marker)
             counter += 1
 
     pass
+
+
+class CreatePathThread(Thread):
+    def __init__(self, threadId, func, user_id):
+        Thread.__init__(self)
+        self.threadId = threadId
+        self.exit_flag = True
+        self.func = func
+        self.user_id = user_id
+
+    def run(self) -> None:
+        print(f"Starting thread id {self.threadId}")
+        while self.exit_flag:
+            try:
+                self.func(self.user_id)
+            except:
+                print(f"Exiting thread id {self.threadId}")
+                self.exit_flag = not self.exit_flag
 
 
 class PopSimMapView(MapView):
@@ -309,11 +318,10 @@ class PopSimMapView(MapView):
     # Lat, Lon
     def __init__(self):
         super().__init__()
-
+        self.executor = None    # concurrent.futures.ThreadPoolExecutor(max_workers=20)
         self.users_json_str = json.dumps(dba.get_all_users('json'))
         self.users_data_firebase = pd.read_json(StringIO(self.users_json_str)).transpose()
         self.user_paths = {}
-        self.counter = 0
         self.max_counter = 0
 
         for index, row in self.users_data_firebase.iterrows():
@@ -321,30 +329,38 @@ class PopSimMapView(MapView):
             self.max_counter = max(self.max_counter, len(random_path) - 1)
             self.user_paths[index] = random_path
 
-        # counter = 0
-        # for key in self.user_paths.keys():
-        #     print(f"{counter}\n{key}: {self.user_paths[key]}", end="\n\n")
-        #     counter += 1
+        for key in self.user_paths.keys():
+            self.user_paths[key] = self.user_paths[key][::-1]
 
-        self.do_stuff()
+        self.user_ids = []
+        for user_id in self.user_paths.keys():
+            self.user_ids.append(user_id)
+        print(self.user_ids)
 
-    def do_stuff(self):
-        event_loop = asyncio.new_event_loop()
-        try:
-            event_loop.run_until_complete(self.create_paths())
-        finally:
-            event_loop.close()
+        self.create_paths()
 
-    async def create_paths(self):
-        while self.counter != 1:
-            for index, row in self.users_data_firebase.iterrows():
-                row['CurrentLocation'] = self.user_paths[row['Id']][min(self.counter,
-                                                                        len(self.user_paths[row['Id']]) - 1)]
-                self.users_json_str = self.users_data_firebase.transpose().to_json()
-                dba.update_all_users(json.loads(self.users_json_str))
-                print(self.users_json_str)
-            self.counter += 1
-        pass
+    def create_paths(self):
+        counter = 0
+        for user_id in self.user_ids:
+            thread = CreatePathThread(counter, self.create_path, user_id)
+            thread.start()
+            counter += 1
+
+    def create_path(self, user_id, delay=1):
+        marker = MapMarker(lon=0, lat=0,
+                           source=os.path.join("coords", "end_point.png"))
+        super().add_marker(marker)
+
+        while True:
+            coords = self.user_paths[user_id].pop()
+            super().remove_marker(marker)
+            marker = MapMarker(lon=coords[1], lat=coords[0],
+                               source=os.path.join("coords", "end_point.png"))
+            super().add_marker(marker)
+            # marker.lon = coords[1]
+            # marker.lat = coords[0]
+            dba.update_user_coords(user_id, coords)
+            sleep(delay)
 
     pass
 
