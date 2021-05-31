@@ -9,6 +9,7 @@ import geopy
 import geopy.distance
 import math
 import numpy as np
+import config
 
 gmaps = googlemaps.Client(key='AIzaSyCHMbZoZ4oY26FIVFU2xllmaWr70YRt004')
 
@@ -113,4 +114,4 @@ def get_random_path():
 
 	directions, distances = get_path(start, end)
 
-	return get_complete_path(2, 10, directions, distances)
+	return get_complete_path(config.speed, config.interval, directions, distances)

@@ -13,6 +13,7 @@ import json
 import database_access as dba
 import user_creation_and_manip as ucm
 import coords_creation_and_manip as ccm
+import config
 
 from kivy.app import App
 from kivy.uix.label import Label
@@ -24,7 +25,6 @@ from kivy.uix.popup import Popup
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.scrollview import ScrollView
 from kivy_garden.mapview import MapView, MapMarker
-
 
 WIDTH = 1000
 HEIGHT = 1000
@@ -304,13 +304,11 @@ class CreatePathThread(Thread):
     def run(self) -> None:
         print(f"Starting thread id {self.threadId}\n", end="")
         while self.exit_flag:
-            # try:
-            self.func(self.user_id)
-            print("here 2")
-            # except:
-            #     print(f"Exiting thread id {self.threadId}\n", end="")
-            #     print("here 3")
-            #     self.exit_flag = not self.exit_flag
+            try:
+                self.func(self.user_id)
+            except:
+                print(f"Exiting thread id {self.threadId}\n", end="")
+                self.exit_flag = not self.exit_flag
 
 
 class PopSimMapView(MapView):
@@ -335,8 +333,12 @@ class PopSimMapView(MapView):
         self.user_ids = []
         for user_id in self.user_paths.keys():
             self.user_ids.append(user_id)
-        print(self.user_ids)
-        print(self.user_paths)
+
+        self.markers = {}
+        for user_id in self.user_ids:
+            self.markers[user_id] = MapMarker(lon=self.user_paths[user_id][-1][1], lat=self.user_paths[user_id][-1][0],
+                                              source=os.path.join("coords", "end_point.png"))
+            super().add_marker(self.markers[user_id])
         self.create_paths()
 
     def create_paths(self):
@@ -346,21 +348,15 @@ class PopSimMapView(MapView):
             thread.start()
             counter += 1
 
-    def create_path(self, user_id, delay=10):
-        marker = MapMarker(lon=0, lat=0,
-                           source=os.path.join("coords", "end_point.png"))
-        super().add_marker(marker)
-
+    def create_path(self, user_id):
         while True:
             coords = self.user_paths[user_id].pop()
-            super().remove_marker(marker)
-            marker = MapMarker(lon=coords[1], lat=coords[0],
-                               source=os.path.join("coords", "end_point.png"))
-            super().add_marker(marker)
-            print("here 0")
+            super().remove_marker(self.markers[user_id])
+            self.markers[user_id].lat = coords[0]
+            self.markers[user_id].lon = coords[1]
+            super().add_marker(self.markers[user_id])
             dba.update_user_coords(user_id, coords)
-            print("here 1")
-            sleep(delay)
+            sleep(config.interval)
 
     pass
 
