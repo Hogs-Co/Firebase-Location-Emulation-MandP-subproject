@@ -302,13 +302,15 @@ class CreatePathThread(Thread):
         self.user_id = user_id
 
     def run(self) -> None:
-        print(f"Starting thread id {self.threadId}")
+        print(f"Starting thread id {self.threadId}\n", end="")
         while self.exit_flag:
-            try:
-                self.func(self.user_id)
-            except:
-                print(f"Exiting thread id {self.threadId}")
-                self.exit_flag = not self.exit_flag
+            # try:
+            self.func(self.user_id)
+            print("here 2")
+            # except:
+            #     print(f"Exiting thread id {self.threadId}\n", end="")
+            #     print("here 3")
+            #     self.exit_flag = not self.exit_flag
 
 
 class PopSimMapView(MapView):
@@ -318,16 +320,14 @@ class PopSimMapView(MapView):
     # Lat, Lon
     def __init__(self):
         super().__init__()
-        self.executor = None    # concurrent.futures.ThreadPoolExecutor(max_workers=20)
-        self.users_json_str = json.dumps(dba.get_all_users('json'))
-        self.users_data_firebase = pd.read_json(StringIO(self.users_json_str)).transpose()
+        users_json_str = json.dumps(dba.get_all_users('json'))
+        users_data_firebase = pd.read_json(StringIO(users_json_str)).transpose()
         self.user_paths = {}
-        self.max_counter = 0
 
-        for index, row in self.users_data_firebase.iterrows():
-            random_path = ccm.get_random_path()
-            self.max_counter = max(self.max_counter, len(random_path) - 1)
-            self.user_paths[index] = random_path
+        for index, row in users_data_firebase.iterrows():
+            if str(index).find("-") != -1:
+                random_path = ccm.get_random_path()
+                self.user_paths[index] = random_path
 
         for key in self.user_paths.keys():
             self.user_paths[key] = self.user_paths[key][::-1]
@@ -336,7 +336,7 @@ class PopSimMapView(MapView):
         for user_id in self.user_paths.keys():
             self.user_ids.append(user_id)
         print(self.user_ids)
-
+        print(self.user_paths)
         self.create_paths()
 
     def create_paths(self):
@@ -346,7 +346,7 @@ class PopSimMapView(MapView):
             thread.start()
             counter += 1
 
-    def create_path(self, user_id, delay=1):
+    def create_path(self, user_id, delay=10):
         marker = MapMarker(lon=0, lat=0,
                            source=os.path.join("coords", "end_point.png"))
         super().add_marker(marker)
@@ -357,9 +357,9 @@ class PopSimMapView(MapView):
             marker = MapMarker(lon=coords[1], lat=coords[0],
                                source=os.path.join("coords", "end_point.png"))
             super().add_marker(marker)
-            # marker.lon = coords[1]
-            # marker.lat = coords[0]
+            print("here 0")
             dba.update_user_coords(user_id, coords)
+            print("here 1")
             sleep(delay)
 
     pass

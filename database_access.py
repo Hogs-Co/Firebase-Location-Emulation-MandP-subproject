@@ -25,7 +25,6 @@ TAGS_DIR = "tags"
 # firebase table identifier: fir-test-env-mandp-default-rtdb
 # firebase link: https://fir-test-env-mandp-default-rtdb.firebaseio.com/
 
-# ------------------Testing env-------------------
 config = {
     "apiKey": "AAAA3KmrBPQ:APA91bFqfELPwbuc7gAS1FkgCland5wKUAEZpEaYUmLdjdjr-rUVF1zBp_5JKHY_TxbsT6ROtiRy28gCd2pEPmHk"
               "awl2b-ow1H2rkOCknJ6b3npX09_flYlFZnQI1O5R0F-EC_PoJw1D",
@@ -35,7 +34,6 @@ config = {
     "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
 }
 
-# ------------------Mobile app env------------------
 # config = {
 #     "apiKey": "AIzaSyBuqichuoC8ytlbDHzlw7dsiaRa10FxB4E",
 #     "authDomain": "party-and-meat.firebaseapp.com",
@@ -44,10 +42,11 @@ config = {
 #     "serviceAccount": "party-and-meat-firebase-adminsdk-r1dse-9055245288.json"
 # }
 
-# tag_keys = ['Name', 'Creation_date', 'Author', 'Users']
+tag_keys = ['Name', 'CreationDate', 'Author', 'Users']
 
 user_keys = ['Id', 'Name', 'Surname', 'Email', 'BirthDate', 'Age',
-             'CurrentLocation', 'CurrentUsedTags', 'UserGeneratedTags']
+             'CurrentLocation', 'CurrentUsedTags', 'UserGeneratedTags',
+             'Info', 'ImageLink']
 
 
 class DatabaseData:
