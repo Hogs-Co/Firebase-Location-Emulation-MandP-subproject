@@ -35,6 +35,7 @@ Window.size = (WIDTH, HEIGHT)
 Window.top = 40 + max(GetSystemMetrics(1) // 2 - 540, 0)
 Window.left = GetSystemMetrics(0) // 2 - 500
 
+opened_popsimmapviews = []
 
 class HomeWindow(Screen):
     def show_popup_map(self):
@@ -343,6 +344,8 @@ class PopSimMapView(MapView):
         self.create_paths()
         self.stop_all_threads = False
 
+        # self.button = Button(text="Kill all threads", pos=(150, 150), on_release=self.stop_all_threads)
+
     def kill_all_threads(self):
         self.stop_all_threads = True
 
@@ -421,7 +424,12 @@ def show_popup_mapview():
 
 
 def show_popup_sim_mapview():
+    global opened_popsimmapviews
     show = PopSimMapView()
+    for popsimmapview in opened_popsimmapviews:
+        popsimmapview.kill_all_threads()
+        opened_popsimmapviews.remove(popsimmapview)
+    opened_popsimmapviews.append(show)
     popup_window = Popup(title="Simulation", content=show, size_hint=(None, None), size=(900, 900))
     popup_window.open()
 

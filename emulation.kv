@@ -82,7 +82,6 @@ WindowManager:
             id: start_sim
             text: "Start sim"
             on_release:
-                #ToDo add create_users and create_tags and location_assign and then start the sim
                 root.show_popup_sim_map()
 
 <BrowseWindow>:
@@ -131,18 +130,8 @@ WindowManager:
             cols: 1
             spacing: 5
 
-##Sim map
-#<SimMap@MapView>:
-#    name: "SimMap"
-#    lon: 19.4560
-#    lat: 51.7592
-#    zoom: 12
-#    snap_to_zoom: False
-#    pause_on_action: False
-#    Button:
-
-#Map
-<MapView>:
+#Sim map
+<PopSimMapView>:
     name: "map"
     lon: 19.4560
     lat: 51.7592
@@ -154,6 +143,15 @@ WindowManager:
         text: "Kill all threads"
         on_release:
             root.kill_all_threads()
+
+#Map
+<PopMapView>:
+    name: "SimMap"
+    lon: 19.4560
+    lat: 51.7592
+    zoom: 12
+    snap_to_zoom: False
+    pause_on_action: False
 
 # Generate windows/screens
 <GenerateWindow>
