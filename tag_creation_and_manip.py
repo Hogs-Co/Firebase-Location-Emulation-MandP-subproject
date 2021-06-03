@@ -32,7 +32,6 @@ class Tag:
             "CreationDate": str(self.creation_date),
             "Users": self.users
         }
-        # print(data)
         return data
 
     def __repr__(self):

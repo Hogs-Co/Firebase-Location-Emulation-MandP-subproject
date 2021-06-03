@@ -1,6 +1,7 @@
 import os
 import asyncio
 import concurrent.futures
+import sys
 
 import pandas as pd
 from io import StringIO
@@ -25,6 +26,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.scrollview import ScrollView
 from kivy_garden.mapview import MapView, MapMarker
+from kivy.config import Config
 
 WIDTH = 1000
 HEIGHT = 1000
@@ -111,7 +113,6 @@ class ScrollContent(ScrollView):
 
 
 class ManageWindow(Screen):
-    # @staticmethod
     def btn_create_user_labels(self):
 
         users_list = dba.get_all_users()
@@ -226,7 +227,6 @@ class PopUpdateUserData(FloatLayout):
         self.ids.incorrect_data.text = ''
         self.ids.correct_data.text = 'Done'
 
-    # @staticmethod
     def generate_data_dict(self):
         data_dict = {}
         for key, val in self.ids.items():
@@ -295,7 +295,7 @@ class PopMapView(MapView):
 
 class CreatePathThread(Thread):
     def __init__(self, threadId, func, user_id):
-        Thread.__init__(self)
+        super().__init__()
         self.threadId = threadId
         self.exit_flag = True
         self.func = func
@@ -304,9 +304,10 @@ class CreatePathThread(Thread):
     def run(self) -> None:
         print(f"Starting thread id {self.threadId}\n", end="")
         while self.exit_flag:
+            print(f"Thread {self.threadId} is running")
             try:
                 self.func(self.user_id)
-            except:
+            except Exception:
                 print(f"Exiting thread id {self.threadId}\n", end="")
                 self.exit_flag = not self.exit_flag
 
@@ -340,11 +341,16 @@ class PopSimMapView(MapView):
                                               source=os.path.join("coords", "end_point.png"))
             super().add_marker(self.markers[user_id])
         self.create_paths()
+        self.stop_all_threads = False
+
+    def kill_all_threads(self):
+        self.stop_all_threads = True
 
     def create_paths(self):
         counter = 0
         for user_id in self.user_ids:
             thread = CreatePathThread(counter, self.create_path, user_id)
+            thread.daemon = True    # This thread dies when main thread exits.
             thread.start()
             counter += 1
 
@@ -357,6 +363,8 @@ class PopSimMapView(MapView):
             super().add_marker(self.markers[user_id])
             dba.update_user_coords(user_id, coords)
             sleep(config.interval)
+            if self.stop_all_threads:
+                raise Exception()
 
     pass
 

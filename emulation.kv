@@ -149,6 +149,11 @@ WindowManager:
     zoom: 12
     snap_to_zoom: False
     pause_on_action: False
+    Button:
+        pos: 100, 100
+        text: "Kill all threads"
+        on_release:
+            root.kill_all_threads()
 
 # Generate windows/screens
 <GenerateWindow>
