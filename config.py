@@ -1,2 +1,2 @@
-speed = 2
-interval = 5
+speed = 5
+interval = 2

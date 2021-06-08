@@ -25,22 +25,24 @@ TAGS_DIR = "tags"
 # firebase table identifier: fir-test-env-mandp-default-rtdb
 # firebase link: https://fir-test-env-mandp-default-rtdb.firebaseio.com/
 
-config = {
-    "apiKey": "AAAA3KmrBPQ:APA91bFqfELPwbuc7gAS1FkgCland5wKUAEZpEaYUmLdjdjr-rUVF1zBp_5JKHY_TxbsT6ROtiRy28gCd2pEPmHk"
-              "awl2b-ow1H2rkOCknJ6b3npX09_flYlFZnQI1O5R0F-EC_PoJw1D",
-    "authDomain": "fir-test-env-mandp.firebaseapp.com",
-    "databaseURL": "https://fir-test-env-mandp-default-rtdb.firebaseio.com",
-    "storageBucket": "fir-test-env-mandp.appspot.com",
-    "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
-}
-
+# Emulation tests Firebase
 # config = {
-#     "apiKey": "AIzaSyBuqichuoC8ytlbDHzlw7dsiaRa10FxB4E",
-#     "authDomain": "party-and-meat.firebaseapp.com",
-#     "databaseURL": "https://party-and-meat-default-rtdb.firebaseio.com",
-#     "storageBucket": "party-and-meat.appspot.com",
-#     "serviceAccount": "party-and-meat-firebase-adminsdk-r1dse-9055245288.json"
+#     "apiKey": "AAAA3KmrBPQ:APA91bFqfELPwbuc7gAS1FkgCland5wKUAEZpEaYUmLdjdjr-rUVF1zBp_5JKHY_TxbsT6ROtiRy28gCd2pEPmHk"
+#               "awl2b-ow1H2rkOCknJ6b3npX09_flYlFZnQI1O5R0F-EC_PoJw1D",
+#     "authDomain": "fir-test-env-mandp.firebaseapp.com",
+#     "databaseURL": "https://fir-test-env-mandp-default-rtdb.firebaseio.com",
+#     "storageBucket": "fir-test-env-mandp.appspot.com",
+#     "serviceAccount": "fir-test-env-mandp-firebase-adminsdk-kswac-032b264225.json"
 # }
+
+# Party-Meat tests Firebase
+config = {
+    "apiKey": "AIzaSyBuqichuoC8ytlbDHzlw7dsiaRa10FxB4E",
+    "authDomain": "party-and-meat.firebaseapp.com",
+    "databaseURL": "https://party-and-meat-default-rtdb.firebaseio.com",
+    "storageBucket": "party-and-meat.appspot.com",
+    "serviceAccount": "party-and-meat-firebase-adminsdk-r1dse-9055245288.json"
+}
 
 tag_keys = ['Name', 'CreationDate', 'Author', 'Users']
 
@@ -131,9 +133,9 @@ def delete_tag(name):
     db.child(TAGS_DIR + "/" + name).shallow().remove()
 
 
-def find_matching_users(user_id):
-    list_of_all_tags = get_all_tags()
-    # TODO add localization for users to show cross-matches on the map :3
+# def find_matching_users(user_id):
+#     list_of_all_tags = get_all_tags()
+#     # TODO add localization for users to show cross-matches on the map :3
 
 
 # user centered functions
